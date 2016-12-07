@@ -1,0 +1,22 @@
+%div.row
+  %div.col-xs-12
+    %div.panel.panel-default
+      %div.panel-heading
+        %h1 LV0 (random)
+      %div.panel-body
+        - if session[:board]
+          %table
+            - 9.times do |j|
+              %tr
+                - 9.times do |i|
+                  %td
+                    - case session[:board][i][j]
+                    - when 0
+                      = link_to '+', game_lv0_path(i: i, j: j), class: 'btn btn-default'
+                    - when 1
+                      %span.btn.btn-primary ○
+                    - when -1
+                      %span.btn.btn-success ●
+          = link_to 'Reset Game', game_reset_path, class: 'btn btn-primary'
+        - else
+          %h2 Session Error: Please reload this page.
