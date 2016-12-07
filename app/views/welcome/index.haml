@@ -1,25 +1,26 @@
-%div.row
-  %div.col-xs-12
-    %div.panel.panel-default
-      %div.panel-heading
-        %h1 Darkness Gomoku Game....
-      %div.panel-body
-        %h2
-          %span.glyphicon.glyphicon-road
-          Rules
-        %ul
-          %li
-            五つ先に石を並べた方の勝ち
-          %li
-            斜め判定有り
-          %li
-            禁じ手は無し
-          %li
-            九路盤
-          %li
-            先行・後攻入れ替えて2戦行う
-          %li
-            先手・後手の一手目縛りは無し
-        %h2.glyphicon.glyphicon-queen AI
-        %ul
-          %li= link_to 'LV-0 (random)', game_lv0_path
+%div.container-fluid
+  %div.row
+    %div.col-xs-12
+      %div.panel.panel-default
+        %div.panel-heading
+          %h1 Darkness Gomoku Game....
+        %div.panel-body
+          %h2
+            %span.glyphicon.glyphicon-road
+            Rules
+          %ul
+            %li
+              五つ先に石を並べた方の勝ち
+            %li
+              斜め判定有り
+            %li
+              禁じ手は無し
+            %li
+              九路盤
+            %li
+              先行・後攻入れ替えて2戦行う
+            %li
+              先手・後手の一手目縛りは無し
+          %h2.glyphicon.glyphicon-queen AI
+          %ul
+            %li= link_to 'LV-0 (random)', game_lv0_path
