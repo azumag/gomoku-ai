@@ -1,0 +1,39 @@
+- gamefin = %w(win lose full).include?(@status) ? true : false
+.container-fluid
+  .row
+    .col-xs-6
+      .panel.panel-default
+        .panel-heading
+          %h1= "LV - #{@game_level}"
+          %h5
+            = link_to '戻る', root_path
+        .panel-body
+          - if gamefin
+            .row
+            - case @status
+            - when 'win'
+              あなたの勝ちです！
+            - when 'lose'
+              あなたの負けです....
+            - when 'full'
+              ありえないことですが．．．引き分けです
+
+          - if session[@game_level]['board']
+            %table
+              - Game::BOARD_SIZE.times do |j|
+                %tr
+                  - Game::BOARD_SIZE.times do |i|
+                    %td
+                      - case session[@game_level]['board'][i][j]
+                      - when 0
+                        - if gamefin
+                          = link_to '+', '#', class: 'btn btn-default'
+                        - else
+                          = link_to '+', game_path(i: i, j: j, level: @game_level), class: 'btn btn-default'
+                      - when 1
+                        %span.btn.btn-primary ○
+                      - when -1
+                        %span.btn.btn-success ●
+            = link_to 'Reset Game', game_reset_path(level: @game_level), class: 'btn btn-primary'
+          - else
+            %h2 Session Error: Please reload this page.
