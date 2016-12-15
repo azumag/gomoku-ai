@@ -10,20 +10,21 @@
         .panel-body
           - if gamefin
             .row
-            - case @status
-            - when 'win'
-              あなたの勝ちです！
-            - when 'lose'
-              あなたの負けです....
-            - when 'full'
-              ありえないことですが．．．引き分けです
-
+              .col-xs-6
+              - case @status
+              - when 'win'
+                あなたの勝ちです！
+              - when 'lose'
+                あなたの負けです....
+              - when 'full'
+                ありえないことですが．．．引き分けです
           - if session[@game_level]['board']
             %table
-              - Game::BOARD_SIZE.times do |j|
+              - Game::BOARD_SIZE.times do |i|
                 %tr
-                  - Game::BOARD_SIZE.times do |i|
+                  - Game::BOARD_SIZE.times do |j|
                     %td
+                      - # TODO: game fin change color : masu
                       - case session[@game_level]['board'][i][j]
                       - when 0
                         - if gamefin
@@ -34,7 +35,7 @@
                         %span.btn.btn-primary ○
                       - when -1
                         %span.btn.btn-success ●
-            = link_to 'Reset Game', game_reset_path(level: @game_level), class: 'btn btn-primary'
+            = link_to '先行からはじめる', game_reset_path(level: @game_level), class: 'btn btn-primary'
             = link_to '後攻からはじめる', game_reset_path(level: @game_level, turn: 'suf'), class: 'btn btn-primary'
           - else
             %h2 Session Error: Please reload this page.
