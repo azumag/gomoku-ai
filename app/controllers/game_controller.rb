@@ -3,34 +3,26 @@ class GameController < ApplicationController
 
     # 0: random
     # 1: pattern
-    @game_level = params[:level] ? params[:level]: "0" 
+    @game_level = params[:level] ? params[:level]: "0"
+
 
     session[@game_level]||={}
     session[@game_level]['turn']||='pre'
     session[@game_level]['board']||= Game.initialize_board
 
-    status = Game.status(session[@game_level]['board'])
+    sign = (session[@game_level]['turn'] == 'pre') ? 1 : -1
 
-    if params[:i] && params[:j] && !status
-      i, j = params[:i].to_i, params[:j].to_i
-      if session[@game_level]['board'][i][j] == 0
-        sign = (session[@game_level]['turn'] == 'pre') ? 1 : -1
-        session[@game_level]['board'][i][j] = sign
-
-        # true : full board
-        # 1 | -1  : winner sign
-        status = Game.status(session[@game_level]['board'])
-
-        # turn of a counter
-        unless status
-          session[@game_level]["board"] = Game.ai(session[@game_level]['board'], @game_level, sign)
-        end
-
-      end
+    case sign
+    when 1
+      session[@game_level]['board'] = Game.user_action(params, session[@game_level]['board'], status)
+      session[@game_level]["board"] = Game.ai(session[@game_level]['board'], @game_level, sign)
+    when -1
+      session[@game_level]["board"] = Game.ai(session[@game_level]['board'], @game_level, sign)
+      session[@game_level]['board'] = Game.user_action(params, session[@game_level]['board'], status)
     end
 
     # TODO rewrite
-    case status
+    case Game.status(session[@game_level]['board'])
     when true
       @status = 'full'
     when Game::PRIMARY_SIGN
@@ -41,7 +33,6 @@ class GameController < ApplicationController
       # nothing to do
     end
 
-    p session[@game_level]
 
   end
 
@@ -49,6 +40,7 @@ class GameController < ApplicationController
     # reset_session
     l = params[:level]
     session[l]['turn'] = nil
+    session[l]['turn'] = params[:turn] if params[:turn]
     session[l]['board']= nil
 
     redirect_to action: :index

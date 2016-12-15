@@ -35,5 +35,6 @@
                       - when -1
                         %span.btn.btn-success ●
             = link_to 'Reset Game', game_reset_path(level: @game_level), class: 'btn btn-primary'
+            = link_to '後攻からはじめる', game_reset_path(level: @game_level, turn: 'suf'), class: 'btn btn-primary'
           - else
             %h2 Session Error: Please reload this page.

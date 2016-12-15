@@ -10,7 +10,25 @@ class Game < ApplicationRecord
     BOARD_SIZE.times.map{|i| BOARD_SIZE.times.map{|j| 0 } }
   end
 
-  def self.ai(board, level, sign)
+  def self.user_action(board, param, sign, status)
+
+    status = nil
+    if (params[:i] && params[:j] && !status)
+      i, j = params[:i].to_i, params[:j].to_i
+      if board[i][j] == 0
+        board[i][j] = sign
+
+        # true : full board
+        # 1 | -1  : winner sign
+        status = Game.status(board)
+      end
+    end
+
+    return board, status
+
+  end
+
+  def self.ai(board, level, sign, status)
     while true
       case level
       when '0'
