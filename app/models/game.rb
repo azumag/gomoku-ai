@@ -31,7 +31,7 @@ class Game < ApplicationRecord
 
   def self.ai_action(board, level, sign)
     self_sign = sign*-1
-    if !Game.status(board) # process if not finished
+    if !Game.status(board) # proceed if not finished
 
       PSEUDO_INF_LOOP.times do
         # 初手なら適当に置く
@@ -290,12 +290,20 @@ class Game < ApplicationRecord
     my_tilt        = tilts_f.select{|b| b == self_sign}.size
     my_tilt       += tilts_b.select{|b| b == self_sign}.size
 
+
     en_horizontal = horizontals.select{|b| b == sign}.size
     en_vertical   = verticals.select{|b| b == sign}.size
     en_tilt        = tilts_f.select{|b| b == sign}.size
     en_tilt       += tilts_b.select{|b| b == sign}.size
 
-    reward = (my_horizontal+my_vertical) + (en_horizontal+en_vertical)
+    reward = (my_horizontal + my_vertical + my_tilt) + (en_horizontal + en_vertical + en_tilt)
+
+    if (i == j) && i == 0
+      puts "#{i}, #{j}'----------------------'"
+      puts "#{my_horizontal} --- #{my_vertical} --- #{my_tilt}"
+      puts "#{en_horizontal} --- #{en_vertical} --- #{en_tilt}"
+      puts "#{horizontals}, #{verticals}, #{tilts_f}, #{tilts_b}"
+    end
 
     return reward
   end
@@ -330,16 +338,75 @@ class Game < ApplicationRecord
   end
 
   def self.breakdown_board(board, i, j)
-    verticals = BOARD_SIZE.times.map{|k| board[k][j] }
-    tilts_f = BOARD_SIZE.times.map{|k|
-      l=(j-k < 0)? 0:(j-k)
-      board[k][l]
-    }
-    m = j+i
-    m = BOARD_SIZE-1 if m >= BOARD_SIZE
-    tilts_b = BOARD_SIZE.times.map{|k|
-      board[k][m-k]
-    }
+
+    horizontals = []
+    cnt = 0
+    board[i].each_with_index do |col, l|
+      next if l < j
+      horizontals << col
+    end
+    cnt = 0
+    board[i].each_with_index do |col, l|
+      break if l > j
+      horizontals << col
+    end
+
+    verticals = []
+    board.each_with_index do |row, l|
+      next if l < i
+      verticals << row[j]
+    end
+    board.each_with_index do |row, l|
+      break if l > i
+      verticals << row[j]
+    end
+
+    tilts_f = []
+    cnt = 0
+    board.each_with_index do |row, l|
+      next if l < i
+      row.each_with_index do |col, n|
+        next if n < j+cnt
+        tilts_f << col
+        cnt += 1
+        break
+      end
+    end
+    cnt = 0
+    board.each_with_index do |row, l|
+      break if l > i
+      row.each_with_index do |col, n|
+        break if n > j-cnt
+        if n == j-cnt
+          tilts_f << col
+          cnt += 1
+          break
+        end
+      end
+    end
+
+    cnt = 0
+    tilts_b = []
+    board.each_with_index do |row, l|
+      next if l < i
+      row.each_with_index do |col, n|
+        next if n < (j - cnt)
+        tilts_b << col
+        cnt += 1
+        break
+      end
+    end
+    # TODO ; check vigorously
+    cnt = 0
+    board.each_with_index do |row, l|
+      break if l > i
+      row.each_with_index do |col, n|
+        next if n < (j + cnt)
+        tilts_b << col
+        cnt += 1
+        break
+      end
+    end
     return board[i], verticals, tilts_f, tilts_b
   end
 
@@ -443,7 +510,7 @@ class Game < ApplicationRecord
       break if board[i-cnt][j+cnt] != sign
       cnt += 1
     end
-    check = (cnt-1 >= REACH_SIZE)
+    check = (cnt >= REACH_SIZE)
     return cnt if check
 
 

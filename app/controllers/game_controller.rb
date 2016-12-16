@@ -18,8 +18,6 @@ class GameController < ApplicationController
     turn  = session[@game_level]['turn']
     sign = (turn == 'pre') ? 1 : -1
 
-    p board
-
     case sign
     when 1
       if (params[:i] && params[:j])
@@ -42,7 +40,6 @@ class GameController < ApplicationController
       end
     end
 
-    # TODO rewrite
     case Game.status(board)
     when true
       @status = 'full'
@@ -54,7 +51,6 @@ class GameController < ApplicationController
       # nothing to do
     end
 
-
   end
 
   def reset
@@ -63,11 +59,8 @@ class GameController < ApplicationController
     session[l]['turn'] = nil
     session[l]['turn'] = params[:turn] if params[:turn]
     session[l]['board']= nil
-
     session[l]['turn_first'] = true
-
     session[:level] = l
-
     redirect_to action: :index
   end
 
