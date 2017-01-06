@@ -106,6 +106,7 @@ class Game < ApplicationRecord
 
         end
 
+        p i
         if board[i][j] == 0
           board[i][j] = self_sign
           break
@@ -516,6 +517,66 @@ class Game < ApplicationRecord
 
     return 0
 
+  end
+
+  def self.generate_histories
+    board = Game.initialize_board
+    game_level = 0.to_s
+
+    board_histories = []
+    answr_histories = {}
+
+    100.times do |t|
+      puts "turn:#{t}"
+      [PRIMARY_SIGN, SECONDARY_SIGN].each do |sign|
+        board_histories[t] = board.flatten
+        tmp_board = Marshal.load(Marshal.dump(board))
+        next_board = Game.ai_action(tmp_board, game_level, sign*-1)
+        (answr_histories[sign]||=[]) << diff(board_histories[t], next_board.flatten)
+        case Game.status(next_board)
+        when true
+          # draw
+          puts 'draw'
+          exit
+        when sign
+          board_histories.each_with_index do |bh, i|
+            cnt = 0
+            puts "----#{i}----"
+            bh.each do |j|
+              cnt += 1
+              print 'O' if j == PRIMARY_SIGN
+              print 'X' if j == SECONDARY_SIGN
+              print '+' if j == 0
+              puts "\n" if cnt.modulo(BOARD_SIZE) == 0
+            end
+            puts "===c==="
+            cnt = 0
+            answr_histories[sign][i].each do |j|
+              cnt += 1
+              object = sign==PRIMARY_SIGN ? "O" : "X"
+              print object if j == 1
+              print '+' if j == 0
+              puts "\n" if cnt.modulo(BOARD_SIZE) == 0
+            end
+          end
+          exit
+        else
+          board = next_board
+        end
+      end
+    end
+
+  end
+
+  def self.diff(src, dst)
+    ret = Array.new(src.size, 0)
+    src.each_with_index do |s, i|
+      if s != dst[i]
+        ret[i] = 1
+        return ret
+      end
+    end
+    return ret
   end
 
 end
