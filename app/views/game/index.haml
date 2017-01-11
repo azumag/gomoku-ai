@@ -30,7 +30,7 @@
                         - if gamefin
                           = link_to '+', '#', class: 'btn btn-default'
                         - else
-                          = link_to '+', game_path(i: i, j: j, level: @game_level), class: 'btn btn-default'
+                          = link_to '+', game_path(i: i, j: j, level: @game_level), class: 'btn btn-default pushable'
                       - when 1
                         %span.btn.btn-primary ○
                       - when -1
