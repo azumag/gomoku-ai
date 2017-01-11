@@ -1,4 +1,5 @@
 class Game < ApplicationRecord
+  require 'open3'
 
   BOARD_SIZE = 9
   WIN_SIZE   = 5
@@ -33,10 +34,18 @@ class Game < ApplicationRecord
     self_sign = sign*-1
     if !Game.status(board) # proceed if not finished
 
+      failed = false
+
       PSEUDO_INF_LOOP.times do
         # 初手なら適当に置く
         first_turn = board.flatten.reject{|b| b==0||b==sign }.empty?
         level = '0' if first_turn
+
+        # level change if location is fail
+        if failed 
+          level = '4' 
+          failed = false
+        end
 
         case level
         when '0'
@@ -103,10 +112,18 @@ class Game < ApplicationRecord
             end
           end
           i, j = maxreward_index[0], maxreward_index[1]
-
+        when '5'
+            # lv 5
+            # using machine learning: 2-layer NN
+            result = nil
+            board_bridge = board.flatten.map{|a| a.to_i * self_sign}.join(' ')
+            cmd = "python #{Rails.root}/ai/execute.py #{board_bridge}"
+            result, e, s = Open3.capture3(cmd)
+            i = (result.to_i/BOARD_SIZE).to_i
+            j = (result.to_i - BOARD_SIZE*i)
+            # puts i,j
         end
 
-        p i
         if board[i][j] == 0
           board[i][j] = self_sign
           break
@@ -114,6 +131,8 @@ class Game < ApplicationRecord
 
         status = Game.status(board)
         break if status
+
+        failed = true
 
       end
     end
@@ -273,10 +292,10 @@ class Game < ApplicationRecord
     reward = FIXNUM_MAX if max_t_chain == 5
 
     if max_h_chain > 0 || max_v_chain > 0 || max_t_chain > 0
-      puts "------"
-      p max_h_chain
-      p max_v_chain
-      p max_t_chain
+     # puts "------"
+     # p max_h_chain
+     # p max_v_chain
+     # p max_t_chain
     end
 
     return reward
@@ -300,10 +319,10 @@ class Game < ApplicationRecord
     reward = (my_horizontal + my_vertical + my_tilt) + (en_horizontal + en_vertical + en_tilt)
 
     if (i == j) && i == 0
-      puts "#{i}, #{j}'----------------------'"
-      puts "#{my_horizontal} --- #{my_vertical} --- #{my_tilt}"
-      puts "#{en_horizontal} --- #{en_vertical} --- #{en_tilt}"
-      puts "#{horizontals}, #{verticals}, #{tilts_f}, #{tilts_b}"
+      #puts "#{i}, #{j}'----------------------'"
+      #puts "#{my_horizontal} --- #{my_vertical} --- #{my_tilt}"
+      #puts "#{en_horizontal} --- #{en_vertical} --- #{en_tilt}"
+      #puts "#{horizontals}, #{verticals}, #{tilts_f}, #{tilts_b}"
     end
 
     return reward
@@ -519,25 +538,48 @@ class Game < ApplicationRecord
 
   end
 
-  def self.generate_histories
+  def self.generate_histories(lp=1000)
+      game_level = '4'
+      lp.times do 
+      begin
+      hist, answ = self.generate_history(game_level)
+      if hist && answ
+          sign = answ.first.max>0 ? PRIMARY_SIGN : SECONDARY_SIGN
+          f = File.open('tmp/histries.dat', 'a')
+          hist.each do |his|
+           f.puts his.map{|a| a.to_i * sign }.join(',')
+          end
+          f.close
+          f = File.open('tmp/answs.dat', 'a')
+          answ.each do |ans|
+            f.puts ans.map{|a| a.to_i * sign}.join(',')
+          end
+          f.close
+      end
+      rescue => e
+          puts e
+      end
+      end
+  end
+
+  def self.generate_history(game_level='0')
     board = Game.initialize_board
-    game_level = 0.to_s
 
     board_histories = []
     answr_histories = {}
 
-    100.times do |t|
+    39.times do |t|
       puts "turn:#{t}"
       [PRIMARY_SIGN, SECONDARY_SIGN].each do |sign|
         board_histories[t] = board.flatten
         tmp_board = Marshal.load(Marshal.dump(board))
         next_board = Game.ai_action(tmp_board, game_level, sign*-1)
-        (answr_histories[sign]||=[]) << diff(board_histories[t], next_board.flatten)
+        (answr_histories[sign]||=[]) << diff(board_histories[t], next_board.flatten, sign)
         case Game.status(next_board)
         when true
           # draw
           puts 'draw'
-          exit
+          return nil
         when sign
           board_histories.each_with_index do |bh, i|
             cnt = 0
@@ -549,30 +591,32 @@ class Game < ApplicationRecord
               print '+' if j == 0
               puts "\n" if cnt.modulo(BOARD_SIZE) == 0
             end
-            puts "===c==="
-            cnt = 0
-            answr_histories[sign][i].each do |j|
-              cnt += 1
-              object = sign==PRIMARY_SIGN ? "O" : "X"
-              print object if j == 1
-              print '+' if j == 0
-              puts "\n" if cnt.modulo(BOARD_SIZE) == 0
-            end
+            #puts "===c==="
+            #cnt = 0
+            #answr_histories[sign][i].each do |j|
+            #  cnt += 1
+            #  object = sign==PRIMARY_SIGN ? "O" : "X"
+            #  print object if j == 1
+            #  print '+' if j == 0
+            #  puts "\n" if cnt.modulo(BOARD_SIZE) == 0
+            #end
           end
-          exit
+          return board_histories, answr_histories[sign]
         else
           board = next_board
         end
       end
     end
+    puts 'not end'
+    return nil
 
   end
 
-  def self.diff(src, dst)
+  def self.diff(src, dst, sign)
     ret = Array.new(src.size, 0)
     src.each_with_index do |s, i|
       if s != dst[i]
-        ret[i] = 1
+        ret[i] = sign
         return ret
       end
     end
