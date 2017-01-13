@@ -9,7 +9,7 @@ import random
 
 train_num = 100
 test_ratio = 0.1
-epoch = 5000
+epoch = 1000
 
 # 開始時刻
 start_time = time.time()

@@ -43,7 +43,7 @@ class Game < ApplicationRecord
 
         # level change if location is fail
         if failed 
-          level = '4' 
+          level = '0' 
           failed = false
         end
 
@@ -538,7 +538,7 @@ class Game < ApplicationRecord
 
   end
 
-  def self.generate_histories(lp, game_level_prime, game_level_second)
+  def self.generate_histories(lp, game_level_prime, game_level_second, log=true)
       game_level_prime = game_level_prime.to_s
       game_level_second = game_level_second.to_s
       wins = {}
@@ -553,6 +553,7 @@ class Game < ApplicationRecord
               if hist && answ
                   wins[win] += 1 
                   game_cnt += 1
+                  next if !log
                   sign = answ.first.max>0 ? PRIMARY_SIGN : SECONDARY_SIGN
                   f = File.open('ai/tmp/histries.dat', 'a')
                   hist.each do |his|
@@ -574,7 +575,7 @@ class Game < ApplicationRecord
       p wins[SECONDARY_SIGN] / game_cnt.to_f
   end
 
-  def self.generate_history(game_level_p='0', game_level_s='0') 
+  def self.generate_history(game_level_p, game_level_s) 
     board = Game.initialize_board
 
     board_histories = []
