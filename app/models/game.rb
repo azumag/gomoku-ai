@@ -117,7 +117,7 @@ class Game < ApplicationRecord
             # using machine learning: 2-layer NN
             result = nil
             board_bridge = board.flatten.map{|a| a.to_i * self_sign}.join(' ')
-            cmd = "python #{Rails.root}/ai/execute.py #{board_bridge}"
+            cmd = "python #{Rails.root}/ai/lv5/exe.py #{board_bridge}"
             result, e, s = Open3.capture3(cmd)
             i = (result.to_i/BOARD_SIZE).to_i
             j = (result.to_i - BOARD_SIZE*i)
@@ -538,41 +538,62 @@ class Game < ApplicationRecord
 
   end
 
-  def self.generate_histories(lp=1000)
-      game_level = '4'
-      lp.times do 
-      begin
-      hist, answ = self.generate_history(game_level)
-      if hist && answ
-          sign = answ.first.max>0 ? PRIMARY_SIGN : SECONDARY_SIGN
-          f = File.open('tmp/histries.dat', 'a')
-          hist.each do |his|
-           f.puts his.map{|a| a.to_i * sign }.join(',')
+  def self.generate_histories(lp, game_level_prime, game_level_second)
+      game_level_prime = game_level_prime.to_s
+      game_level_second = game_level_second.to_s
+      wins = {}
+      wins[PRIMARY_SIGN] = 0
+      wins[SECONDARY_SIGN] = 0
+      p wins
+      game_cnt = 0
+      lp.times do |i|
+          begin
+              puts "history - #{i}"
+              hist, answ , win = self.generate_history(game_level_prime, game_level_second)
+              if hist && answ
+                  wins[win] += 1 
+                  game_cnt += 1
+                  sign = answ.first.max>0 ? PRIMARY_SIGN : SECONDARY_SIGN
+                  f = File.open('ai/tmp/histries.dat', 'a')
+                  hist.each do |his|
+                      f.puts his.map{|a| a.to_i * sign }.join(',')
+                  end
+                  f.close
+                  f = File.open('ai/tmp/answs.dat', 'a')
+                  answ.each do |ans|
+                      f.puts ans.map{|a| a.to_i * sign}.join(',')
+                  end
+                  f.close
+              end
+          rescue => e
+              puts e
           end
-          f.close
-          f = File.open('tmp/answs.dat', 'a')
-          answ.each do |ans|
-            f.puts ans.map{|a| a.to_i * sign}.join(',')
-          end
-          f.close
       end
-      rescue => e
-          puts e
-      end
-      end
+      p wins
+      p wins[PRIMARY_SIGN] / game_cnt.to_f
+      p wins[SECONDARY_SIGN] / game_cnt.to_f
   end
 
-  def self.generate_history(game_level='0')
+  def self.generate_history(game_level_p='0', game_level_s='0') 
     board = Game.initialize_board
 
     board_histories = []
     answr_histories = {}
 
     39.times do |t|
-      puts "turn:#{t}"
-      [PRIMARY_SIGN, SECONDARY_SIGN].each do |sign|
+        puts "----#{t}----"
+        cnt = 0
+        board.flatten.each do |j|
+            cnt += 1
+            print 'O' if j == PRIMARY_SIGN
+            print 'X' if j == SECONDARY_SIGN
+            print '+' if j == 0
+            puts "\n" if cnt.modulo(BOARD_SIZE) == 0
+        end
+        [PRIMARY_SIGN, SECONDARY_SIGN].each do |sign|
         board_histories[t] = board.flatten
         tmp_board = Marshal.load(Marshal.dump(board))
+        game_level = (sign==PRIMARY_SIGN) ? game_level_p : game_level_s
         next_board = Game.ai_action(tmp_board, game_level, sign*-1)
         (answr_histories[sign]||=[]) << diff(board_histories[t], next_board.flatten, sign)
         case Game.status(next_board)
@@ -583,15 +604,7 @@ class Game < ApplicationRecord
         when sign
           board_histories.each_with_index do |bh, i|
             cnt = 0
-            puts "----#{i}----"
-            bh.each do |j|
-              cnt += 1
-              print 'O' if j == PRIMARY_SIGN
-              print 'X' if j == SECONDARY_SIGN
-              print '+' if j == 0
-              puts "\n" if cnt.modulo(BOARD_SIZE) == 0
-            end
-            #puts "===c==="
+           #puts "===c==="
             #cnt = 0
             #answr_histories[sign][i].each do |j|
             #  cnt += 1
@@ -601,9 +614,9 @@ class Game < ApplicationRecord
             #  puts "\n" if cnt.modulo(BOARD_SIZE) == 0
             #end
           end
-          return board_histories, answr_histories[sign]
+          return board_histories, answr_histories[sign], sign
         else
-          board = next_board
+         board = next_board
         end
       end
     end
