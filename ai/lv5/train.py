@@ -7,9 +7,9 @@ import time
 import sys
 import random
 
-train_num = 1000
+train_num = 1
 test_ratio = 0.1
-epoch = 10000
+epoch = 1
 
 # 開始時刻
 start_time = time.time()
@@ -65,7 +65,7 @@ sess.run(init)
 # train_stepを実行する
 # feed_dictでplaceholderに値を入力することができる
 print "--- 訓練開始 ---"
-for i in range(epoch):
+for i in range(len(hst_data)):
     print 'batch: ' + str(i)
     train_data  = random.sample(hst_data, train_num)
     train_label = random.sample(ans_data, train_num)
