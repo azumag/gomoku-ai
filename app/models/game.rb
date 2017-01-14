@@ -118,10 +118,12 @@ class Game < ApplicationRecord
             result = nil
             board_bridge = board.flatten.map{|a| a.to_i * self_sign}.join(' ')
             cmd = "python #{Rails.root}/ai/lv5/exe.py #{board_bridge}"
+            p cmd
             result, e, s = Open3.capture3(cmd)
+            p result
             i = (result.to_i/BOARD_SIZE).to_i
             j = (result.to_i - BOARD_SIZE*i)
-            # puts i,j
+            puts i,j
         end
 
         if board[i][j] == 0
