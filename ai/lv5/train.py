@@ -29,26 +29,26 @@ x = tf.placeholder(tf.float32, [None, 81])
 
 # 重み
 W = tf.Variable(tf.zeros([81, 81]))
-W2 = tf.Variable(tf.zeros([81, 81]))
-W3 = tf.Variable(tf.zeros([81, 81]))
+#W2 = tf.Variable(tf.zeros([81, 81]))
+#W3 = tf.Variable(tf.zeros([81, 81]))
 
 # バイアス
 b = tf.Variable(tf.zeros([81]))
-b2 = tf.Variable(tf.zeros([81]))
-b3 = tf.Variable(tf.zeros([81]))
+#b2 = tf.Variable(tf.zeros([81]))
+#b3 = tf.Variable(tf.zeros([81]))
 
 # ソフトマックス回帰を実行
 # yは入力x of 確率の分布
 # matmul関数で行列xとWの掛け算を行った後、bを加算する。
 # yは[1, 81]の行列
-y = tf.nn.relu(tf.matmul(x, W) + b)
-y2 = tf.nn.relu(tf.matmul(y, W2) + b2)
-y3 = tf.nn.softmax(tf.matmul(y2, W3) + b3)
+y = tf.nn.softmax(tf.matmul(x, W) + b)
+#y2 = tf.nn.relu(tf.matmul(y, W2) + b2)
+#y3 = tf.nn.softmax(tf.matmul(y2, W3) + b3)
 
 # 交差エントロピー
 # y_は正解データのラベル
 y_ = tf.placeholder(tf.float32, [None, 81])
-cross_entropy = -tf.reduce_sum(y_*tf.log(y3))
+cross_entropy = -tf.reduce_sum(y_*tf.log(y))
 
 # 勾配法を用い交差エントロピーが最小となるようyを最適化する
 train_step = tf.train.GradientDescentOptimizer(0.01).minimize(cross_entropy)
