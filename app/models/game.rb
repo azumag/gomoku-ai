@@ -559,7 +559,8 @@ class Game < ApplicationRecord
                   sign = answ.first.max>0 ? PRIMARY_SIGN : SECONDARY_SIGN
                   f = File.open('ai/tmp/histries.dat', 'a')
                   hist.each do |his|
-                      f.puts his.map{|a| a.to_i * sign }.join(',')
+                      inv = his.map{|a| a.to_i * sign }
+                      f.puts inv.map{|a| (a.to_i==SECONDARY_SIGN) ? 2 : a.to_i}.join(',')
                   end
                   f.close
                   f = File.open('ai/tmp/answs.dat', 'a')
@@ -585,14 +586,14 @@ class Game < ApplicationRecord
 
     39.times do |t|
         puts "----#{t}----"
-        cnt = 0
-        board.flatten.each do |j|
-            cnt += 1
-            print 'O' if j == PRIMARY_SIGN
-            print 'X' if j == SECONDARY_SIGN
-            print '+' if j == 0
-            puts "\n" if cnt.modulo(BOARD_SIZE) == 0
-        end
+        #cnt = 0
+        #board.flatten.each do |j|
+        #    cnt += 1
+        #    print 'O' if j == PRIMARY_SIGN
+        #    print 'X' if j == SECONDARY_SIGN
+        #    print '+' if j == 0
+        #    puts "\n" if cnt.modulo(BOARD_SIZE) == 0
+        #end
         [PRIMARY_SIGN, SECONDARY_SIGN].each do |sign|
         board_histories[t] = board.flatten
         tmp_board = Marshal.load(Marshal.dump(board))
