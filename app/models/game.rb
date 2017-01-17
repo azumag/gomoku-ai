@@ -116,7 +116,8 @@ class Game < ApplicationRecord
             # lv 5
             # using machine learning: 2-layer NN
             result = nil
-            board_bridge = board.flatten.map{|a| a.to_i * self_sign}.join(' ')
+            inv = board.flatten.map{|a| a.to_i * sign }
+            board_bridge = inv.map{|a| (a.to_i==SECONDARY_SIGN) ? 2 : a.to_i}.join(' ')
             cmd = "python #{Rails.root}/ai/lv5/exe.py #{board_bridge}"
             p cmd
             result, e, s = Open3.capture3(cmd)
