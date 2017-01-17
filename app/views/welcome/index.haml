@@ -1,25 +1,27 @@
-%div.container-fluid
-  %div.row
-    %div.col-xs-12
-      %div.panel.panel-default
-        %div.panel-heading
-          %h1 AI Gomoku
-        %div.panel-body
+.container-fluid
+  .row
+    .col-xs-12
+      .panel.panel-default
+        .panel-heading
+          .jumbotron
+            .container
+              %h1 AI Gomoku
+        .panel-body
           %h2
             %span.glyphicon.glyphicon-road
-            Rules
-          %ul
-            %li
+              Rules
+          %ul.list-group
+            %li.list-group-item
               五つ先に石を並べた方の勝ち
-            %li
+            %li.list-group-item
               斜め判定有り
-            %li
+            %li.list-group-item
               禁じ手は無し
-            %li
+            %li.list-group-item
               九路盤
-            %li
+            %li.list-group-item
               先行・後攻入れ替えて2戦行う
-            %li
+            %li.list-group-item
               先手・後手の一手目縛りは無し
           %h2.glyphicon.glyphicon-queen AI
           %ul
