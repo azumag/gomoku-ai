@@ -122,6 +122,8 @@ class Game < ApplicationRecord
             p cmd
             result, e, s = Open3.capture3(cmd)
             p result
+            p e
+            p s
             i = (result.to_i/BOARD_SIZE).to_i
             j = (result.to_i - BOARD_SIZE*i)
             puts i,j

@@ -32,5 +32,5 @@ input_d = [[ int(i) for i in sys.argv[1:] ]]
 
 print(sess.run(tf.argmax(y, 1), feed_dict={x: input_d}))[0]
 
-
+#print(os.path.dirname(__file__))
 
