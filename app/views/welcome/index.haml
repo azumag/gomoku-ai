@@ -3,9 +3,7 @@
     .col-xs-12
       .panel.panel-default
         .panel-heading
-          .jumbotron
-            .container
-              %h1 AI Gomoku
+          %h1 AI Gomoku
         .panel-body
           %h2
             %span.glyphicon.glyphicon-road
@@ -24,10 +22,11 @@
             %li.list-group-item
               先手・後手の一手目縛りは無し
           %h2.glyphicon.glyphicon-queen AI
-          %ul
-            %li= link_to 'LV-0 (random)', game_path
-            %li= link_to 'LV-1', game_path(level: 1)
-            %li= link_to 'LV-2', game_path(level: 2)
-            %li= link_to 'LV-3', game_path(level: 3)
-            %li= link_to 'LV-4', game_path(level: 4)
-            %li= link_to 'LV-5', game_path(level: 5)
+          %ul.list-group
+            %li.list-group-item= link_to 'LV-0 (random)', game_path
+            %li.list-group-item= link_to 'LV-1', game_path(level: 1)
+            %li.list-group-item= link_to 'LV-2', game_path(level: 2)
+            %li.list-group-item= link_to 'LV-3', game_path(level: 3)
+            %li.list-group-item= link_to 'LV-4', game_path(level: 4)
+            %li.list-group-item= link_to 'LV-5', game_path(level: 5)
+            %li.list-group-item= link_to 'LV-6', game_path(level: 6)

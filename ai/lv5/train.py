@@ -7,9 +7,8 @@ import time
 import sys
 import random
 
-train_num = 1
+batch = 100
 test_ratio = 0.1
-epoch = 1
 
 # 開始時刻
 start_time = time.time()
@@ -17,8 +16,8 @@ print "開始時刻: " + str(start_time)
 
 # MNISTデータの読み込み
 print "--- データの読み込み開始 ---"
-histories = csv.reader(open('../data/lv5-histries.dat', 'r'))
-answs = csv.reader(open('../data/lv5-answs.dat', 'r'))
+histories = csv.reader(open('../data/lv5h', 'r'))
+answs = csv.reader(open('../data/lv5a', 'r'))
 
 hst_data = [ [ int(a) for a in v ] for v in histories]
 ans_data = [ [ int(a) for a in v ] for v in answs]
@@ -67,8 +66,8 @@ sess.run(init)
 print "--- 訓練開始 ---"
 for i in range(len(hst_data)):
     print 'batch: ' + str(i)
-    train_data  = random.sample(hst_data, train_num)
-    train_label = random.sample(ans_data, train_num)
+    train_data  = hst_data[i: i+1*batch]
+    train_label = ans_data[i: i+1*batch]
     sess.run(train_step, feed_dict={x: train_data, y_: train_label})
 print "--- 訓練終了 ---"
 
@@ -89,8 +88,8 @@ accuracy = tf.reduce_mean(tf.cast(correct_prediction, "float"))
 # テストデータの画像とラベルで精度を確認する
 # ソフトマックス回帰によってWとbの値が計算されているので、xを入力することでyが計算できる
 print "精度"
-test_data  = random.sample(hst_data, int(len(hst_data)*test_ratio))
-test_label = random.sample(ans_data, int(len(ans_data)*test_ratio))
+test_data  = hst_data[0: int(len(hst_data)*test_ratio)]
+test_label = ans_data[0: int(len(ans_data)*test_ratio)]
 print(sess.run(accuracy, feed_dict={x: test_data, y_: test_label}))
 
 

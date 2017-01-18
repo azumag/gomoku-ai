@@ -11,7 +11,7 @@ W = tf.Variable(tf.zeros([81, 81]))
 b = tf.Variable(tf.zeros([81]))
 #b2 = tf.Variable(tf.zeros([81]))
 #b3 = tf.Variable(tf.zeros([81]))
-y = tf.nn.relu(tf.matmul(x, W) + b)
+y = tf.nn.softmax(tf.matmul(x, W) + b)
 #y2 = tf.nn.relu(tf.matmul(y, W2) + b2)
 #y3 = tf.nn.softmax(tf.matmul(y2, W3) + b3)
 

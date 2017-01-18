@@ -39,7 +39,7 @@ class Game < ApplicationRecord
       PSEUDO_INF_LOOP.times do
         # 初手なら適当に置く
         first_turn = board.flatten.reject{|b| b==0||b==sign }.empty?
-        level = '0' if first_turn
+        level = '0' if first_turn && level.to_i < 5
 
         # level change if location is fail
         if failed 
@@ -112,18 +112,20 @@ class Game < ApplicationRecord
             end
           end
           i, j = maxreward_index[0], maxreward_index[1]
-        when '5'
-            # lv 5
-            # using machine learning: 2-layer NN
+        when '5', '6'
+            # lv 5  using machine learning: 2-layer NN
+            # lv 6  3-layer NN
             result = nil
-            inv = board.flatten.map{|a| a.to_i * sign }
+            puts self_sign
+            puts_as_txt(board)
+            inv = board.flatten.map{|a| a.to_i * self_sign}
             board_bridge = inv.map{|a| (a.to_i==SECONDARY_SIGN) ? 2 : a.to_i}.join(' ')
-            cmd = "python #{Rails.root}/ai/lv5/exe.py #{board_bridge}"
-            p cmd
+            cmd = "python #{Rails.root}/ai/lv#{level}/exe.py #{board_bridge}"
+            #p cmd
             result, e, s = Open3.capture3(cmd)
-            p result
-            p e
-            p s
+            #p result
+            #p e
+            #p s
             i = (result.to_i/BOARD_SIZE).to_i
             j = (result.to_i - BOARD_SIZE*i)
             puts i,j
@@ -581,6 +583,18 @@ class Game < ApplicationRecord
       p wins[SECONDARY_SIGN] / game_cnt.to_f
   end
 
+
+  def self.puts_as_txt(board)
+      cnt = 0
+      board.flatten.each do |j|
+          cnt += 1
+          print 'O' if j == PRIMARY_SIGN
+          print 'X' if j == SECONDARY_SIGN
+          print '+' if j == 0
+          puts "\n" if cnt.modulo(BOARD_SIZE) == 0
+      end
+  end
+
   def self.generate_history(game_level_p, game_level_s) 
     board = Game.initialize_board
 
@@ -609,8 +623,8 @@ class Game < ApplicationRecord
           puts 'draw'
           return nil
         when sign
-          board_histories.each_with_index do |bh, i|
-            cnt = 0
+          #board_histories.each_with_index do |bh, i|
+           # cnt = 0
            #puts "===c==="
             #cnt = 0
             #answr_histories[sign][i].each do |j|
@@ -620,7 +634,7 @@ class Game < ApplicationRecord
             #  print '+' if j == 0
             #  puts "\n" if cnt.modulo(BOARD_SIZE) == 0
             #end
-          end
+          #end
           return board_histories, answr_histories[sign], sign
         else
          board = next_board
