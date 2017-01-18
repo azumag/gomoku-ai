@@ -7,7 +7,7 @@ import time
 import sys
 import random
 
-batch = 100
+batch = 1
 test_ratio = 0.1
 
 # 開始時刻
@@ -53,7 +53,7 @@ cross_entropy = -tf.reduce_sum(y_*tf.log(y3))
 train_step = tf.train.GradientDescentOptimizer(0.01).minimize(cross_entropy)
 
 # 用意した変数Veriableの初期化を実行する
-init = tf.initialize_all_variables()
+init = tf.global_variables_initializer()
 
 # Sessionを開始する
 # runすることで初めて実行開始される（run(init)しないとinitが実行されない）

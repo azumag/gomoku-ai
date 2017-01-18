@@ -112,19 +112,22 @@ class Game < ApplicationRecord
             end
           end
           i, j = maxreward_index[0], maxreward_index[1]
-        when '5', '6'
+        when '5', '6', '7', '8', '9', '10'
             # lv 5  using machine learning: 2-layer NN
             # lv 6  3-layer NN
+            # lv 7  cnn 3-layer
+            # lv 8  4-layer nn
+           #
             result = nil
             puts self_sign
             puts_as_txt(board)
             inv = board.flatten.map{|a| a.to_i * self_sign}
             board_bridge = inv.map{|a| (a.to_i==SECONDARY_SIGN) ? 2 : a.to_i}.join(' ')
             cmd = "python #{Rails.root}/ai/lv#{level}/exe.py #{board_bridge}"
-            #p cmd
+            p cmd
             result, e, s = Open3.capture3(cmd)
-            #p result
-            #p e
+            p result
+            p e
             #p s
             i = (result.to_i/BOARD_SIZE).to_i
             j = (result.to_i - BOARD_SIZE*i)
@@ -545,7 +548,7 @@ class Game < ApplicationRecord
 
   end
 
-  def self.generate_histories(lp, game_level_prime, game_level_second, log=true)
+  def self.generate_histories(lp, game_level_prime, game_level_second, log, mode='w')
       game_level_prime = game_level_prime.to_s
       game_level_second = game_level_second.to_s
       wins = {}
@@ -560,22 +563,23 @@ class Game < ApplicationRecord
               if hist && answ
                   wins[win] += 1 
                   game_cnt += 1
-                  next if !log
+                  next if log.blank?
+                  logpath = log
                   sign = answ.first.max>0 ? PRIMARY_SIGN : SECONDARY_SIGN
-                  f = File.open('ai/tmp/histries.dat', 'a')
+                  f = File.open('ai/tmp/h-'+log, mode)
                   hist.each do |his|
                       inv = his.map{|a| a.to_i * sign }
                       f.puts inv.map{|a| (a.to_i==SECONDARY_SIGN) ? 2 : a.to_i}.join(',')
                   end
                   f.close
-                  f = File.open('ai/tmp/answs.dat', 'a')
+                  f = File.open('ai/tmp/a-'+log, mode)
                   answ.each do |ans|
                       f.puts ans.map{|a| a.to_i * sign}.join(',')
                   end
                   f.close
               end
           rescue => e
-              puts e
+              puts e.backtrace
           end
       end
       p wins
@@ -655,6 +659,24 @@ class Game < ApplicationRecord
       end
     end
     return ret
+  end
+
+  def self.train_infinite(batch, level, log='inf', mode='new')
+      case mode
+      when 'new'
+          while true
+              begin
+              File.delete("#{Rails.root}/ai/tmp/h-#{log}")
+              File.delete("#{Rails.root}/ai/tmp/a-#{log}") 
+              rescue => e
+                  puts e
+              end
+              generate_histories(batch, level, level, log, 'a')
+              cmd = "python #{Rails.root}/ai/lv#{level}/train.py"
+              result, e, s = Open3.capture3(cmd)
+              p result, e
+          end
+      end
   end
 
 end

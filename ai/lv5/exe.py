@@ -15,7 +15,7 @@ y = tf.nn.softmax(tf.matmul(x, W) + b)
 #y2 = tf.nn.relu(tf.matmul(y, W2) + b2)
 #y3 = tf.nn.softmax(tf.matmul(y2, W3) + b3)
 
-init = tf.initialize_all_variables()
+init = tf.global_variables_initializer()
 
 sess=tf.InteractiveSession()
 sess.run(init)

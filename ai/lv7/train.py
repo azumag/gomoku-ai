@@ -7,9 +7,8 @@ import time
 import sys
 import random
 
-batch = 100
+batch = 1000
 test_ratio = 0.1
-epoch = 1
 
 def weight_variable(shape):
     initial = tf.truncated_normal(shape, stddev=0.1)
@@ -51,16 +50,16 @@ x_image = tf.reshape(x, [-1, 9,9, 1])
 hc1 = tf.nn.relu(conv2d(x_image, wc1) + bc1)
 hp1 = max_pool_2x2(hc1)
 
-W_conv2 = weight_variable([5, 5, 81, 18])
-b_conv2 = bias_variable([18])
+W_conv2 = weight_variable([5, 5, 81, 32])
+b_conv2 = bias_variable([32])
 
 h_conv2 = tf.nn.relu(conv2d(hp1, W_conv2) + b_conv2)
 h_pool2 = max_pool_2x2(h_conv2)
 
-W_fc1 = weight_variable([3 * 3 * 18, 81])
+W_fc1 = weight_variable([3*3*32, 81])
 b_fc1 = bias_variable([81])
 
-h_pool2_flat = tf.reshape(h_pool2, [-1, 3*3*18])
+h_pool2_flat = tf.reshape(h_pool2, [-1, 3*3*32])
 h_fc1 = tf.nn.relu(tf.matmul(h_pool2_flat, W_fc1) + b_fc1)
 
 keep_prob = tf.placeholder(tf.float32)

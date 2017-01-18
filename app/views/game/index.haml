@@ -1,7 +1,7 @@
 - gamefin = %w(win lose full).include?(@status) ? true : false
 .container-fluid
   .row
-    .col-xs-6
+    .col-xs-12
       .panel.panel-default
         .panel-heading
           %h1= "LV - #{@game_level}"
@@ -10,7 +10,7 @@
         .panel-body
           - if gamefin
             .row
-              .col-xs-6
+              .col-xs-12
               - case @status
               - when 'win'
                 あなたの勝ちです！
