@@ -1,24 +1,28 @@
 # README
-
-This README would normally document whatever steps are necessary to get the
-application up and running.
-
-Things you may want to cover:
-
 * Ruby version
+2.3.1
 
 * System dependencies
-
-* Configuration
+- python 2.7
+- Tensorflow (for machine learning)
+- Ruby on Rails v 5.0.0 (for ui)
 
 * Database creation
+None
 
-* Database initialization
+*
+# TODO
+- GA tuning
+ - battle num
+ - nn
+  - 
+ - cnn
+  - keep_prob
+- GPU
+- co-evolution between history-anser and nn
+- infinite learning
+ - nn ok
+ - cnn ok
 
-* How to run the test suite
 
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+ ...
