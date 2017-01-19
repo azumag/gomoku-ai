@@ -7,7 +7,7 @@ import time
 import sys
 import random
 
-batch = 1
+batch = 100
 test_ratio = 0.1
 
 # 開始時刻
@@ -70,10 +70,10 @@ test_label = ans_data[0: int(len(ans_data)*test_ratio)]
 # train_stepを実行する
 # feed_dictでplaceholderに値を入力することができる
 print "--- 訓練開始 ---"
-for j in range(100):
-    for i in range(len(hst_data)):
-        sess.run(train_step, feed_dict={x: hst_data[i:i+1], y_: ans_data[i:i+1]})
-    print(print("step %d, training accuracy %g"%(j, sess.run(accuracy, feed_dict={x: hst_data, y_: ans_data}))))
+for i in range(len(hst_data)):
+    sess.run(train_step, feed_dict={x: hst_data[i:i+batch], y_: ans_data[i:i+batch]})
+    if i%1000 == 0:
+      print("step %d, training accuracy %g"%(i, sess.run(accuracy, feed_dict={x: test_data, y_: test_label})))
 print "--- 訓練終了 ---"
 
 

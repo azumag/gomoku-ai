@@ -11,6 +11,8 @@
  - None
 
 # TODO
+- Table config
+ - history saving as learning data
 - GA tuning
  - battle num
  - resource execution (lifetime)

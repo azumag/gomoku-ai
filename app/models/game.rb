@@ -112,11 +112,16 @@ class Game < ApplicationRecord
             end
           end
           i, j = maxreward_index[0], maxreward_index[1]
-        when '5', '6', '7', '8', '9', '10', '11', '12'
+        when '5', '6', '7', '8', '9', '10', '11', '12', '13'
             # lv 5  using machine learning: 2-layer NN
             # lv 6  3-layer NN
             # lv 7  cnn 3-layer
             # lv 8  4-layer nn
+            # lv 9  inf 4l nn - from initial
+            # lv 10  inf 4l nn - from educated
+            # lv 11 inf ?
+            # lv 12 inf cnn - f edu
+            # lv 13 inf 2lnn - f edu
            #
             result = nil
             puts self_sign
