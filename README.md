@@ -1,16 +1,15 @@
 # README
 * Ruby version
-2.3.1
+ - 2.3.1
 
 * System dependencies
-- python 2.7
-- Tensorflow (for machine learning)
-- Ruby on Rails v 5.0.0 (for ui)
+ - python 2.7
+ - Tensorflow (for machine learning)
+ - Ruby on Rails v 5.0.0 (for ui)
 
 * Database creation
-None
+ - None
 
-*
 # TODO
 - GA tuning
  - battle num
