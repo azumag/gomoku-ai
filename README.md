@@ -13,8 +13,13 @@
 # TODO
 - GA tuning
  - battle num
+ - resource execution (lifetime)
  - nn
-  - 
+  - layer num
+  - optimize num
+  - batch-size
+  - loss function kind (advanced)
+  - activate function kind (advanced)
  - cnn
   - keep_prob
 - GPU

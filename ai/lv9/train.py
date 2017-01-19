@@ -61,34 +61,20 @@ init = tf.global_variables_initializer()
 sess = tf.Session()
 sess.run(init)
 
+correct_prediction = tf.equal(tf.argmax(y3,1), tf.argmax(y_,1))
+accuracy = tf.reduce_mean(tf.cast(correct_prediction, "float"))
+test_data  = hst_data[0: int(len(hst_data)*test_ratio)]
+test_label = ans_data[0: int(len(ans_data)*test_ratio)]
+
+
 # train_stepを実行する
 # feed_dictでplaceholderに値を入力することができる
 print "--- 訓練開始 ---"
 for j in range(100):
     for i in range(len(hst_data)):
         sess.run(train_step, feed_dict={x: hst_data[i:i+1], y_: ans_data[i:i+1]})
+    print(print("step %d, training accuracy %g"%(j, sess.run(accuracy, feed_dict={x: hst_data, y_: ans_data}))))
 print "--- 訓練終了 ---"
-
-# 正しいかの予測
-# 計算された画像がどの数字であるかの予測yと正解ラベルy_を比較する
-#同じ値であればTrueが返される
-# argmaxは配列の中で一番値の大きい箇所のindexが返される
-#一番値が大きいindexということは、それがその数字である確率が一番大きいということ
-# Trueが返ってくるということは訓練した結果と回答が同じということ
-correct_prediction = tf.equal(tf.argmax(y3,1), tf.argmax(y_,1))
-
-# 精度の計算
-# correct_predictionはbooleanなのでfloatにキャストし、平均値を計算する
-# Trueならば1、Falseならば0に変換される
-accuracy = tf.reduce_mean(tf.cast(correct_prediction, "float"))
-
-# 精度の実行と表示
-# テストデータの画像とラベルで精度を確認する
-# ソフトマックス回帰によってWとbの値が計算されているので、xを入力することでyが計算できる
-print "精度"
-test_data  = hst_data[0: int(len(hst_data)*test_ratio)]
-test_label = ans_data[0: int(len(ans_data)*test_ratio)]
-print(sess.run(accuracy, feed_dict={x: test_data, y_: test_label}))
 
 
 # 終了時刻
