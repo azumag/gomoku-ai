@@ -112,7 +112,7 @@ class Game < ApplicationRecord
             end
           end
           i, j = maxreward_index[0], maxreward_index[1]
-        when '5', '6', '7', '8', '9', '10'
+        when '5', '6', '7', '8', '9', '10', '11', '12'
             # lv 5  using machine learning: 2-layer NN
             # lv 6  3-layer NN
             # lv 7  cnn 3-layer
@@ -665,16 +665,18 @@ class Game < ApplicationRecord
       case mode
       when 'new'
           while true
+              generate_histories(batch, level, level, log, 'a')
+              cmd = "python #{Rails.root}/ai/lv#{level}/train.py"
+              result, e, s = Open3.capture3(cmd)
+              p result, e
+
               begin
               File.delete("#{Rails.root}/ai/tmp/h-#{log}")
               File.delete("#{Rails.root}/ai/tmp/a-#{log}") 
               rescue => e
                   puts e
               end
-              generate_histories(batch, level, level, log, 'a')
-              cmd = "python #{Rails.root}/ai/lv#{level}/train.py"
-              result, e, s = Open3.capture3(cmd)
-              p result, e
+
           end
       end
   end

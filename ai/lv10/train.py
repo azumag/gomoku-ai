@@ -64,9 +64,9 @@ sess.run(init)
 # train_stepを実行する
 # feed_dictでplaceholderに値を入力することができる
 print "--- 訓練開始 ---"
-for i in range(len(hst_data)):
-    #print 'batch: ' + str(i)
-    sess.run(train_step, feed_dict={x: hst_data[i:i+1], y_: ans_data[i:i+1]})
+for j in range(100):
+    for i in range(len(hst_data)):
+        sess.run(train_step, feed_dict={x: hst_data[i:i+1], y_: ans_data[i:i+1]})
 print "--- 訓練終了 ---"
 
 # 正しいかの予測
