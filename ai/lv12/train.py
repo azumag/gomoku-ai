@@ -9,6 +9,7 @@ import random
 
 batch = 1000
 test_ratio = 0.1
+log = argv[1]
 
 def weight_variable(shape):
     initial = tf.truncated_normal(shape, stddev=0.1)
@@ -31,8 +32,8 @@ print "開始時刻: " + str(start_time)
 
 # MNISTデータの読み込み
 print "--- データの読み込み開始 ---"
-histories = csv.reader(open('/home/azumagakito/gomoku-ai/ai/tmp/h-inf4', 'r'))
-answs = csv.reader(open('/home/azumagakito/gomoku-ai/ai/tmp/a-inf4', 'r'))
+histories = csv.reader(open('/home/azumagakito/gomoku-ai/ai/tmp/h-'+log, 'r'))
+answs = csv.reader(open('/home/azumagakito/gomoku-ai/ai/tmp/a-'+log, 'r'))
 
 hst_data = [ [ int(a) for a in v ] for v in histories]
 ans_data = [ [ int(a) for a in v ] for v in answs]

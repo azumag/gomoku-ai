@@ -671,7 +671,7 @@ class Game < ApplicationRecord
       when 'new'
           while true
               generate_histories(batch, level, level, log, 'a')
-              cmd = "python #{Rails.root}/ai/lv#{level}/train.py"
+              cmd = "python #{Rails.root}/ai/lv#{level}/train.py #{log}"
               result, e, s = Open3.capture3(cmd)
               p result, e
 

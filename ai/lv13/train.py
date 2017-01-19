@@ -9,6 +9,7 @@ import random
 
 batch = 1
 test_ratio = 0.1
+log = argv[1]
 
 # 開始時刻
 start_time = time.time()
@@ -16,8 +17,8 @@ print "開始時刻: " + str(start_time)
 
 # MNISTデータの読み込み
 print "--- データの読み込み開始 ---"
-histories = csv.reader(open('/home/azumagakito/gomoku-ai/ai/tmp/h-inf5', 'r'))
-answs = csv.reader(open('/home/azumagakito/gomoku-ai/ai/tmp/a-inf5', 'r'))
+histories = csv.reader(open('/home/azumagakito/gomoku-ai/ai/tmp/h-'+log, 'r'))
+answs = csv.reader(open('/home/azumagakito/gomoku-ai/ai/tmp/a-'+log, 'r'))
 
 hst_data = [ [ int(a) for a in v ] for v in histories]
 ans_data = [ [ int(a) for a in v ] for v in answs]
