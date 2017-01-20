@@ -112,7 +112,7 @@ class Game < ApplicationRecord
             end
           end
           i, j = maxreward_index[0], maxreward_index[1]
-        when '5', '6', '7', '8', '9', '10', '11', '12', '13'
+        when '5', '6', '7', '8', '9', '10', '11', '12', '13', '14'
             # lv 5  using machine learning: 2-layer NN
             # lv 6  3-layer NN
             # lv 7  cnn 3-layer
@@ -122,7 +122,8 @@ class Game < ApplicationRecord
             # lv 11 inf ?
             # lv 12 inf cnn - f edu
             # lv 13 inf 2lnn - f edu
-           #
+            # lv 14 inf sms random f edu
+         
             result = nil
             puts self_sign
             puts_as_txt(board)
@@ -553,9 +554,10 @@ class Game < ApplicationRecord
 
   end
 
-  def self.generate_histories(lp, game_level_prime, game_level_second, log, mode='w')
+  def self.generate_histories(lp, game_level_prime, game_level_second, log, mode='w', rn=false)
       game_level_prime = game_level_prime.to_s
       game_level_second = game_level_second.to_s
+      level = game_level_prime
       wins = {}
       wins[PRIMARY_SIGN] = 0
       wins[SECONDARY_SIGN] = 0
@@ -564,7 +566,17 @@ class Game < ApplicationRecord
       lp.times do |i|
           begin
               puts "history - #{i}"
-              hist, answ , win = self.generate_history(game_level_prime, game_level_second)
+              if rn
+                  puts '-----------'
+                  p rand
+                  if rand > 0.5
+                      level = rand(14).to_s
+                  else
+                      level  = game_level_prime
+                  end
+                  p level
+              end
+              hist, answ , win = self.generate_history(level, game_level_second)
               if hist && answ
                   wins[win] += 1 
                   game_cnt += 1
@@ -666,11 +678,11 @@ class Game < ApplicationRecord
     return ret
   end
 
-  def self.train_infinite(batch, level, log='inf', mode='new')
+  def self.train_infinite(batch, level, log='inf', mode='new', rn=false)
       case mode
       when 'new'
           while true
-              generate_histories(batch, level, level, log, 'a')
+             generate_histories(batch, level, level, log, 'a', rn)
               cmd = "python #{Rails.root}/ai/lv#{level}/train.py #{log}"
               result, e, s = Open3.capture3(cmd)
               p result, e
