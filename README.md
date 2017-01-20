@@ -29,6 +29,7 @@
 - infinite learning
  - nn ok
  - cnn ok
+ - adding-learning
 
 
  ...
