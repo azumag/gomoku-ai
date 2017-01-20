@@ -1,7 +1,8 @@
 import numpy as np
 
 class Boardmanager:
-    board = np.meshgrid(np.zeros(9))
+    BOARD_SIZE = 9
+    board = np.zeros([BOARD_SIZE, BOARD_SIZE])
 
     def __init__(self):
         print('init')
