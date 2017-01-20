@@ -49,7 +49,7 @@ class Perceptron:
         return (self.sess.run(accuracy, feed_dict={self.x: test_data, self.y_: test_label}))
 
     def execute(self, input_d):
-        return (self.sess.run(tf.argmax(self.neurons[-1], 1), feed_dict={self.x: input_d}))[0]
+        return (self.sess.run(tf.argmax(self.neurons[-1], 1), feed_dict={self.x: input_d}))
 
     def save(self, save_file):
         saver = tf.train.Saver()
