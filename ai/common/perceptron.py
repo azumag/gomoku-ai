@@ -53,17 +53,17 @@ class Perceptron:
 
     def save(self, save_file):
         saver = tf.train.Saver()
-        saver.save(sess, save_file)
+        saver.save(self.sess, save_file)
 
     def load(self, save_file):
         saver = tf.train.Saver()
-        saver.restore(sess, save_file)
+        saver.restore(self.sess, save_file)
 
     def layer_set(self):
         self.x = tf.placeholder(tf.float32, [None, self.n_input])
 
-        self.weights = [ tf.Variable(tf.zeros([n_input, n_input])) for i in range(self.layer)]
-        self.biases  = [ tf.Variable(tf.zeros([n_input])) for i in range(self.layer)]
+        self.weights = [ tf.Variable(tf.zeros([self.n_input, self.n_input])) for i in range(self.layer)]
+        self.biases  = [ tf.Variable(tf.zeros([self.n_input])) for i in range(self.layer)]
         self.neurons = [ tf.nn.relu(tf.matmul(self.x, self.weights[0])+self.biases[0]) ]
 
         for i in range(1, self.layer-1):
@@ -75,7 +75,7 @@ class Perceptron:
             tf.nn.softmax(
                 tf.matmul(self.neurons[-1], self.weights[-1]) + self.biases[-1]))
 
-        self.y_ = tf.placeholder(tf.float32, [None, n_output])
+        self.y_ = tf.placeholder(tf.float32, [None, self.n_output])
 
         cross_entropy = -tf.reduce_sum(self.y_*tf.log(self.neurons[-1]))
         train_step = tf.train.GradientDescentOptimizer(0.01).minimize(cross_entropy)

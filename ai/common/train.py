@@ -13,4 +13,6 @@ data_sample = u.Util().load_data('../tmp/h-4v4')
 result = n.execute(data_sample)
 accuracies.append(result)
 
+n.save('./testsave/save.ckpt')
+
 print accuracies
