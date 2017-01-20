@@ -112,7 +112,7 @@ class Game < ApplicationRecord
             end
           end
           i, j = maxreward_index[0], maxreward_index[1]
-        when '5', '6', '7', '8', '9', '10', '11', '12', '13', '14'
+        when '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15'
             # lv 5  using machine learning: 2-layer NN
             # lv 6  3-layer NN
             # lv 7  cnn 3-layer
@@ -122,7 +122,8 @@ class Game < ApplicationRecord
             # lv 11 inf ?
             # lv 12 inf cnn - f edu
             # lv 13 inf 2lnn - f edu
-            # lv 14 inf sms random f edu
+            # lv 14 inf cnn randoms(0-14) f edu
+            # lv 15 inf cnn vs random f edu
          
             result = nil
             puts self_sign
@@ -574,6 +575,7 @@ class Game < ApplicationRecord
                   else
                       level  = game_level_prime
                   end
+		  level = '0' if rn == 0
                   p level
               end
               hist, answ , win = self.generate_history(level, game_level_second)
