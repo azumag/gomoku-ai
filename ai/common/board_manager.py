@@ -87,3 +87,10 @@ class BoardManager:
                 else:
                     sys.stdout.write("X ")
             print ''
+
+    def switch_turn(self, turn):
+        if turn == 1:
+            turn = 2
+        else:
+            turn = 1
+        return turn
