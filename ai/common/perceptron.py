@@ -2,32 +2,30 @@ import tensorflow as tf
 import util as u
 
 class Perceptron:
-    data_path = '/home/azumagakito/gomoku-ai/ai/tmp/'
-    layer = 3
+    layer = 0
     weights = []
     neurons = []
     biases  = []
+    n_input = 0
+    n_output = 0
+    x  = None
     y_ = None
     util = None
     sess = None
+    train_step = None
 
-    def __init__(self, layer):
+    # now input = output is required... TODO; FIXME;
+    def __init__(self, layer, n_input, n_output):
         self.util = u.Util()
         self.sess = tf.Session()
         self.layer = layer
+        self.n_input = n_input
+        self.n_output = n_output
+        self.train_step = self.layer_set()
 
-    def weight_variable(self,shape):
-        initial = tf.truncated_normal(shape, stddev=0.1)
-        return tf.Variable(initial)
-
-    def bias_variable(self,shape):
-        initial = tf.constant(0.1, shape=shape)
-        return tf.Variable(initial)
-
-    def train(self, file_name, batch):
-        train_data  = self.util.load_data(self.data_path+'h-'+file_name)
-        train_label = self.util.load_data(self.data_path+'a-'+file_name)
-        train_step = self.layer_set()
+    def train(self, train_file, label_file, batch):
+        train_data  = self.util.load_data(train_file)
+        train_label = self.util.load_data(label_file)
 
         self.util.print_start()
         print "--- start train ---"
@@ -37,25 +35,37 @@ class Perceptron:
             print 'batch: ' + str(i) + ' - ' + str(batch_range)
             batch_data  = train_data[i: batch_range]
             batch_label = train_label[i: batch_range]
-            self.sess.run(train_step, feed_dict={x: batch_data, y_: batch_label})
+            self.sess.run(self.train_step, feed_dict={self.x: batch_data, self.y_: batch_label})
         print "--- end train ---"
         self.util.print_end()
 
-    def test(self, file_name):
-        test_data  = self.util.load_data(data_path+'h-'+file_name)
-        test_label = self.util.load_data(data_path+'a-'+file_name)
+    def test(self, data_file, label_file):
+        test_data  = self.util.load_data(data_file)
+        test_label = self.util.load_data(label_file)
 
-        correct_prediction = tf.equal(tf.argmax(self.neurons[-1],1), tf.argmax(y_,1))
+        correct_prediction = tf.equal(tf.argmax(self.neurons[-1],1), tf.argmax(self.y_,1))
         accuracy = tf.reduce_mean(tf.cast(correct_prediction, "float"))
 
-        print(self.sess.run(accuracy, feed_dict={x: test_data, y_: test_label}))
+        return (self.sess.run(accuracy, feed_dict={self.x: test_data, self.y_: test_label}))
+
+    def execute(self, input_d):
+        return (self.sess.run(tf.argmax(self.neurons[-1], 1), feed_dict={self.x: input_d}))
+
+    def save(self, save_file):
+        saver = tf.train.Saver()
+        saver.save(self.sess, save_file)
+
+    def load(self, save_file):
+        saver = tf.train.Saver()
+        saver.restore(self.sess, save_file)
 
     def layer_set(self):
-        x = tf.placeholder(tf.float32, [None, 81])
+        self.x = tf.placeholder(tf.float32, [None, self.n_input])
 
-        self.weights = [ self.weight_variable(tf.zeros([81, 81])) for i in range(self.layer)]
-        self.biases  = [ self.bias_variable(tf.zeros([81, 81])) for i in range(self.layer)]
-        self.neurons = [ tf.nn.relu(tf.matmul(x, weights[0])+b[0]) ]
+        self.weights = [ tf.Variable(tf.zeros([self.n_input, self.n_input])) for i in range(self.layer)]
+        self.biases  = [ tf.Variable(tf.zeros([self.n_input])) for i in range(self.layer)]
+        self.neurons = [ tf.nn.relu(tf.matmul(self.x, self.weights[0])+self.biases[0]) ]
+
         for i in range(1, self.layer-1):
             self.neurons.append(
                 tf.nn.relu(
@@ -65,12 +75,12 @@ class Perceptron:
             tf.nn.softmax(
                 tf.matmul(self.neurons[-1], self.weights[-1]) + self.biases[-1]))
 
-        self.y_ = tf.placeholder(tf.float32, [None, 81])
+        self.y_ = tf.placeholder(tf.float32, [None, self.n_output])
 
         cross_entropy = -tf.reduce_sum(self.y_*tf.log(self.neurons[-1]))
         train_step = tf.train.GradientDescentOptimizer(0.01).minimize(cross_entropy)
 
-        init = tf.global_variables_initializer()
-        sess.run(init)
+        init = tf.initialize_all_variables()
+        self.sess.run(init)
 
         return train_step

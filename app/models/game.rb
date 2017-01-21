@@ -42,8 +42,8 @@ class Game < ApplicationRecord
         level = '0' if first_turn && level.to_i < 5
 
         # level change if location is fail
-        if failed 
-          level = '0' 
+        if failed
+          level = '0'
           failed = false
         end
 
@@ -124,7 +124,7 @@ class Game < ApplicationRecord
             # lv 13 inf 2lnn - f edu
             # lv 14 inf cnn randoms(0-14) f edu
             # lv 15 inf cnn vs random f edu
-         
+
             result = nil
             puts self_sign
             puts_as_txt(board)
@@ -205,7 +205,6 @@ class Game < ApplicationRecord
     end
     check = (cnt >= WIN_SIZE)
     return true if check
-
 
     cnt = 0
     ## naname check forward
@@ -580,7 +579,7 @@ class Game < ApplicationRecord
               end
               hist, answ , win = self.generate_history(level, game_level_second)
               if hist && answ
-                  wins[win] += 1 
+                  wins[win] += 1
                   game_cnt += 1
                   next if log.blank?
                   logpath = log
@@ -618,7 +617,7 @@ class Game < ApplicationRecord
       end
   end
 
-  def self.generate_history(game_level_p, game_level_s) 
+  def self.generate_history(game_level_p, game_level_s)
     board = Game.initialize_board
 
     board_histories = []
@@ -691,7 +690,7 @@ class Game < ApplicationRecord
 
               begin
               File.delete("#{Rails.root}/ai/tmp/h-#{log}")
-              File.delete("#{Rails.root}/ai/tmp/a-#{log}") 
+              File.delete("#{Rails.root}/ai/tmp/a-#{log}")
               rescue => e
                   puts e
               end
