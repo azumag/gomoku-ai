@@ -80,7 +80,7 @@ class Perceptron:
         cross_entropy = -tf.reduce_sum(self.y_*tf.log(self.neurons[-1]))
         train_step = tf.train.GradientDescentOptimizer(0.01).minimize(cross_entropy)
 
-        init = tf.initialize_all_variables()
+        init = tf.global_variables_initializer()
         self.sess.run(init)
 
         return train_step

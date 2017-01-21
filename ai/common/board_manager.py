@@ -1,70 +1,89 @@
 import numpy as np
+import sys
 
 class BoardManager:
     BOARD_SIZE = 9
+    WIN_SIZE = 5
     PRIMARY_SIGN   = 1
     SECONDARY_SIGN = 2
-    board = np.zeros([BOARD_SIZE, BOARD_SIZE])
 
     def __init__(self):
         print('init')
-        print self.board
+
+    def check_row(self, board):
+        for row in board:
+            for col in row:
+                if col == 0:
+                    continue
+                count = 0
+                print col
+                for k in row:
+                    if col == k:
+                        count += 1
+                    else:
+                        if count >= self.WIN_SIZE:
+                            return col
+        return 0
+
+    def check_next(self, board, i, j, di, dj, count):
+        if count >= self.WIN_SIZE:
+            return True
+        if i+di >= self.BOARD_SIZE or j+dj >= self.BOARD_SIZE:
+            return False
+        if board[i][j] == board[i+di][j+dj]:
+            return self.check_next(board, i+di, j+dj, di, dj, count+1)
+        else:
+            return False
+
+    def check(self, board, di, dj):
+        for i in range(self.BOARD_SIZE):
+            for j in range(self.BOARD_SIZE):
+                if self.check_next(board, i, j, di, dj, 1):
+                    return board[i][j]
+
+        return 0
 
     def status(self, board):
-        line = 0
-        for i in xrange(BOARD_SIZE):
-            if board[0][i] != 0:
-                line = 1
-                for j in xrange(BORAD_SIZE):
-                    if board[0][i] != board[j][i]:
-                        line = 0
-                        break
-            else:
-                line = 0
 
-        if line != 0:
-            return board[0][i]
+        status = self.check(board, 0, 1)
 
-        for i in xrange(BOARD_SIZE):
-            if board[i][0] != 0:
-                line = 1
-                for j in xrange(BOARD_SIZE):
-                    if board[i][0] != board[j][i]:
-                        line = 0
-                        break
-            else:
-                line=0
+        if status != 0:
+            return status
 
-        if line != 0:
-            return board[i][0]
+        status = self.check(board.T, 0, 1)
 
-        for i in xrange(1, BOARD_SIZE):
-            if board[0][0] != 0:
-                line = 1
-                if board[0][0] != board[i][i]:
-                    line = 0
-                    break
-            else:
-                line = 0
+        if status != 0:
+            return status
 
-        if line != 0:
-            return board[0][0]
+        status = self.check(board, 1, 1)
 
-        for i in xrange(1, BOARD_SIZE):
-            if board[0][BOARD_SIZE-1] != 0:
-                line = 1
-                if board[0][BOARD_SIZE-1] != board[i][BOARD_SIZE-1-i]:
-                    line = 0
-                    break
-            else:
-                line = 0
+        if status != 0:
+            return status
 
-        if line != 0:
-            return board[0][BOARD_SIZE-1]
+        status = self.check(np.fliplr(board), 1, 1)
 
-        for i in xrange(BOARD_SIZE):
-            for j in xrange(BOARD_SIZE):
-                if board[i][j]==0:
-                    return 0
+        if status != 0:
+            return status
 
-        return 3
+        # check full
+        filled = True
+        for row in board:
+            for col in row:
+                if col == 0:
+                    filled = False
+
+        if filled:
+            return 3
+
+        return 0
+
+    def print_board(self, board):
+        for row in board:
+            for col in row:
+                if col == 0:
+                    sys.stdout.write("+ ")
+                elif col == 1:
+                    sys.stdout.write("O ")
+                else:
+                    sys.stdout.write("X ")
+            print ''
