@@ -1,5 +1,6 @@
 import tensorflow as tf
 import util as u
+import os
 
 class Perceptron:
     layer = 0
@@ -56,8 +57,9 @@ class Perceptron:
         saver.save(self.sess, save_file)
 
     def load(self, save_file):
-        saver = tf.train.Saver()
-        saver.restore(self.sess, save_file)
+        if os.path.exists(save_file):
+            saver = tf.train.Saver()
+            saver.restore(self.sess, save_file)
 
     def layer_set(self):
         self.x = tf.placeholder(tf.float32, [None, self.n_input])

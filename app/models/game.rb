@@ -118,6 +118,7 @@ class Game < ApplicationRecord
             # lv 7  cnn 3-layer
             # lv 8  4-layer nn
             # lv 9  inf 4l nn - from initial
+            # ----- deprecated -----
             # lv 10  inf 4l nn - from educated
             # lv 11 inf ?
             # lv 12 inf cnn - f edu
@@ -131,6 +132,9 @@ class Game < ApplicationRecord
             inv = board.flatten.map{|a| a.to_i * self_sign}
             board_bridge = inv.map{|a| (a.to_i==SECONDARY_SIGN) ? 2 : a.to_i}.join(' ')
             cmd = "python #{Rails.root}/ai/lv#{level}/exe.py #{board_bridge}"
+
+            cmd = "python #{Rails.root}/ai/exe.py #{Rails.root}/ai/lv#{level}/model/model.ckpt #{board_bridge}" if level.to_i >= 9
+
             p cmd
             result, e, s = Open3.capture3(cmd)
             p result

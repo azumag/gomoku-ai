@@ -1,16 +1,19 @@
-import board_manager as bm
+import common.board_manager as bm
+import common.perceptron as nn
+
 import numpy as np
 import random
 
 import tensorflow as tf
-import perceptron as nn
 
 b = bm.BoardManager()
 n = nn.Perceptron(4, 81, 81)
-n.load('./testsave/save.ckpt')
 
-data_file_d = 'testsave/dtest.csv'
-data_file_l = 'testsave/ltest.csv'
+model_file = 'lv9/model/model.ckpt'
+n.load(model_file)
+
+data_file_d = 'tmp/d9.csv'
+data_file_l = 'tmp/l9.csv'
 
 train_n = 10 # number of train battle
 count = 0
@@ -22,6 +25,7 @@ while True:
     if count >= train_n:
         count = 0
         n.train(data_file_d, data_file_l, 1)
+        n.save(model_file)
         b.clear_data(data_file_d)
         b.clear_data(data_file_l)
     count += 1

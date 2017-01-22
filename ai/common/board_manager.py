@@ -1,5 +1,7 @@
 import numpy as np
 import sys
+import csv
+import os
 
 class BoardManager:
     BOARD_SIZE = 9
@@ -77,6 +79,11 @@ class BoardManager:
 
         return 0
 
+    def print_history(self, histories):
+        for history in histories:
+            print '==='
+            self.print_board(history.reshape([self.BOARD_SIZE, self.BOARD_SIZE]))
+
     def print_board(self, board):
         for row in board:
             for col in row:
@@ -87,6 +94,18 @@ class BoardManager:
                 else:
                     sys.stdout.write("X ")
             print ''
+
+    def transform_bridge(self, board):
+        return board.reshape([1, len(board)**2])
+
+    def save_data(self, to_file, data, mode):
+        with open(to_file, mode) as f:
+            writer = csv.writer(f, lineterminator='\n')
+            writer.writerows([ [int(i) for i in d] for d in data])
+
+    def clear_data(self, path):
+        if os.path.exists(path):
+            os.remove(path)
 
     def switch_turn(self, turn):
         if turn == 1:
