@@ -10,7 +10,7 @@ class BoardManager:
     SECONDARY_SIGN = 2
 
     def __init__(self):
-        print('init')
+        pass
 
     def check_row(self, board):
         for row in board:
