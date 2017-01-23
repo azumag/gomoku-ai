@@ -228,7 +228,7 @@ class Game < ApplicationRecord
     win_size.times do |w|
       break if j+win_size> BOARD_SIZE
       break if board[i][j+cnt] != sign
-      cnt += F1
+      cnt += 1
     end
     check = (cnt >= win_size)
     return true if check
