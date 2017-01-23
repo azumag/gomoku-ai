@@ -145,6 +145,12 @@ class Game < ApplicationRecord
             puts i,j
         end
 
+        # if reach, put in to win
+        k, l, flg = check_reach(board, self_sign)
+        if flg
+          i, j = k, l
+        end
+
         if board[i][j] == 0
           board[i][j] = self_sign
           break
@@ -160,6 +166,18 @@ class Game < ApplicationRecord
 
     board
 
+  end
+
+  def self.check_reach(board, my_sign)
+    # Check reach
+    board.each_with_index do |ii, i|
+      ii.each_with_index do |sign, j|
+        next if sign != 0
+        voard = board.clone
+        voard[i][j] = my_sign
+        return i, j, true if self.check_win(voard, my_sign, i, j)
+      end
+    end
   end
 
   # true : full board
