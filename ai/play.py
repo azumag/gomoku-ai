@@ -5,23 +5,25 @@ import numpy as np
 import random
 
 import tensorflow as tf
+import sys
 
 
-layer = sys.argv[1]
 model_file = sys.argv[2]
 data_file_d = sys.argv[3]
 data_file_l = sys.argv[4]
+
+layer = int(sys.argv[1])
 
 b = bm.BoardManager()
 n = nn.Perceptron(layer, 81, 81)
 
 n.load(model_file)
 
-train_n = 1000 # number of train battle
+train_n = 10000 # number of train battle
 count = 0
 
-b.clear_data(data_file_d)
-b.clear_data(data_file_l)
+#b.clear_data(data_file_d)
+#b.clear_data(data_file_l)
 
 while True:
     if count >= train_n:

@@ -5,10 +5,10 @@ import numpy as np
 import random
 
 import tensorflow as tf
+import sys
 
-
-data_file_d = sys.argv[3]
-data_file_l = sys.argv[4]
+data_file_d = sys.argv[1]
+data_file_l = sys.argv[2]
 
 b = bm.BoardManager()
 
@@ -17,7 +17,7 @@ count = 0
 b.clear_data(data_file_d)
 b.clear_data(data_file_l)
 
-while count <= 1000:
+while count <= 10000:
     count += 1
 
     turn = 1
