@@ -17,7 +17,7 @@ n = nn.Perceptron(layer, 81, 81)
 
 n.load(model_file)
 
-train_n = 10 # number of train battle
+train_n = 1000 # number of train battle
 count = 0
 
 b.clear_data(data_file_d)
