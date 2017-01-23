@@ -173,11 +173,12 @@ class Game < ApplicationRecord
     board.each_with_index do |ii, i|
       ii.each_with_index do |sign, j|
         next if sign != 0
-        voard = board.clone
+	voard = Marshal.load(Marshal.dump(board))
         voard[i][j] = my_sign
         return i, j, true if self.check_win(voard, my_sign, i, j)
       end
     end
+    return 0, 0, false
   end
 
   # true : full board
