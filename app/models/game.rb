@@ -173,7 +173,7 @@ class Game < ApplicationRecord
     board.each_with_index do |ii, i|
       ii.each_with_index do |sign, j|
         next if sign != 0
-	voard = Marshal.load(Marshal.dump(board))
+        voard = Marshal.load(Marshal.dump(board))
         voard[i][j] = my_sign
         return i, j, true if self.check_win(voard, my_sign, i, j)
       end
@@ -220,10 +220,30 @@ class Game < ApplicationRecord
     return true if check
 
     cnt = 0
+    ## horizontal check - backward
+    WIN_SIZE.times do |w|
+      break if j-WIN_SIZE < 0
+      break if board[i][j-cnt] != sign
+      cnt += 1
+    end
+    check = (cnt >= WIN_SIZE)
+    return true if check
+
+    cnt = 0
     ## vertical check
     WIN_SIZE.times do |w|
       break if i+WIN_SIZE > BOARD_SIZE
       break if board[i+cnt][j] != sign
+      cnt += 1
+    end
+    check = (cnt >= WIN_SIZE)
+    return true if check
+
+    cnt = 0
+    ## vertical check - backward
+    WIN_SIZE.times do |w|
+      break if i-WIN_SIZE < 0
+      break if board[i-cnt][j] != sign
       cnt += 1
     end
     check = (cnt >= WIN_SIZE)
