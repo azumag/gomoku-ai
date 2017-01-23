@@ -6,14 +6,16 @@ import random
 
 import tensorflow as tf
 
+
+layer = sys.argv[1]
+model_file = sys.argv[2]
+data_file_d = sys.argv[3]
+data_file_l = sys.argv[4]
+
 b = bm.BoardManager()
-n = nn.Perceptron(4, 81, 81)
+n = nn.Perceptron(layer, 81, 81)
 
-model_file = 'lv9/model/model.ckpt'
 n.load(model_file)
-
-data_file_d = 'tmp/d9.csv'
-data_file_l = 'tmp/l9.csv'
 
 train_n = 10 # number of train battle
 count = 0
