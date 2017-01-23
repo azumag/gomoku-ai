@@ -176,6 +176,20 @@ class Game < ApplicationRecord
         voard = Marshal.load(Marshal.dump(board))
         voard[i][j] = my_sign
         return i, j, true if self.check_win(voard, my_sign, i, j)
+        # if pre-reach row-col TODO: tilt pattern
+        if self.check_win(voard, my_sign, i, j, WIN_SIZE-1)
+          [voard, voard.transpose].each do |v|
+            if v[i][j..WIN_SIZE-1].uniq.size == 1
+              if v[i][j+WIN_SIZE] != my_sign*-1 && v[i][j-1] != my_sign*-1
+                return i, j+WIN_SIZE, true
+              end
+            elsif v[i][WIN_SIZE-1..j].uniq.size == 1
+              if v[i][j+1] != my_sign*-1 && v[i][j-WIN_SIZE] != my_sign*-1
+                return i, j-WIN_SIZE, true
+              end
+            end
+          end
+        end
       end
     end
     return 0, 0, false
@@ -207,51 +221,51 @@ class Game < ApplicationRecord
     finished
   end
 
-  def self.check_win(board, sign, i, j)
+  def self.check_win(board, sign, i, j, win_size=WIN_SIZE)
     # TODO : refactoring
     cnt = 0
     ## horizontal check
-    WIN_SIZE.times do |w|
-      break if j+WIN_SIZE > BOARD_SIZE
+    win_size.times do |w|
+      break if j+win_size> BOARD_SIZE
       break if board[i][j+cnt] != sign
-      cnt += 1
+      cnt += F1
     end
-    check = (cnt >= WIN_SIZE)
+    check = (cnt >= win_size)
     return true if check
 
     cnt = 0
     ## horizontal check - backward
-    WIN_SIZE.times do |w|
-      break if j-WIN_SIZE < 0
+    win_size.times do |w|
+      break if j-win_size < 0
       break if board[i][j-cnt] != sign
       cnt += 1
     end
-    check = (cnt >= WIN_SIZE)
+    check = (cnt >= win_size)
     return true if check
 
     cnt = 0
     ## vertical check
-    WIN_SIZE.times do |w|
-      break if i+WIN_SIZE > BOARD_SIZE
+    win_size.times do |w|
+      break if i+win_size > BOARD_SIZE
       break if board[i+cnt][j] != sign
       cnt += 1
     end
-    check = (cnt >= WIN_SIZE)
+    check = (cnt >= win_size)
     return true if check
 
     cnt = 0
     ## vertical check - backward
-    WIN_SIZE.times do |w|
-      break if i-WIN_SIZE < 0
+    win_size.times do |w|
+      break if i-win_size < 0
       break if board[i-cnt][j] != sign
       cnt += 1
     end
-    check = (cnt >= WIN_SIZE)
+    check = (cnt >= win_size)
     return true if check
 
     cnt = 0
     ## naname check forward
-    WIN_SIZE.times do |w|
+    win_size.times do |w|
       break if i+cnt > BOARD_SIZE
       break if j+cnt > BOARD_SIZE
       break unless board[i+cnt]
@@ -259,12 +273,12 @@ class Game < ApplicationRecord
       break if board[i+cnt][j+cnt] != sign
       cnt += 1
     end
-    check = (cnt >= WIN_SIZE)
+    check = (cnt >= win_size)
     return true if check
 
     cnt = 0
     ## naname check backward
-    WIN_SIZE.times do |w|
+    win_size.times do |w|
       break if i+cnt < 0
       break if j-cnt < 0
       break unless board[i+cnt]
@@ -272,7 +286,7 @@ class Game < ApplicationRecord
       break if board[i+cnt][j-cnt] != sign
       cnt += 1
     end
-    check = (cnt >= WIN_SIZE)
+    check = (cnt >= win_size)
     return true if check
 
   end
