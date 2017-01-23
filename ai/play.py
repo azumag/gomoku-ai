@@ -15,7 +15,7 @@ n.load(model_file)
 data_file_d = 'tmp/d9.csv'
 data_file_l = 'tmp/l9.csv'
 
-train_n = 10 # number of train battle
+train_n = 1000 # number of train battle
 count = 0
 
 b.clear_data(data_file_d)
