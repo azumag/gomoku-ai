@@ -177,19 +177,19 @@ class Game < ApplicationRecord
         voard[i][j] = my_sign
         return i, j, true if self.check_win(voard, my_sign, i, j)
         # if pre-reach row-col TODO: tilt pattern
-        if self.check_win(voard, my_sign, i, j, WIN_SIZE-1)
-          [voard, voard.transpose].each do |v|
-            if v[i][j..WIN_SIZE-1].uniq.size == 1
-              if v[i][j+WIN_SIZE] == 0 && v[i][j-1] == 0
-                return i, j+WIN_SIZE, true
-              end
-            elsif v[i][WIN_SIZE-1..j].uniq.size == 1
-              if v[i][j+1] == 0 && v[i][j-WIN_SIZE] == 0
-                return i, j-WIN_SIZE, true
-              end
-            end
-          end
-        end
+        # if self.check_win(voard, my_sign, i, j, WIN_SIZE-1)
+        #   [voard, voard.transpose].each do |v|
+        #     if v[i][j..WIN_SIZE-1].uniq.size == 1
+        #       if v[i][j+WIN_SIZE] == 0 && v[i][j-1] == 0
+        #         return i, j+WIN_SIZE, true
+        #       end
+        #     elsif v[i][WIN_SIZE-1..j].uniq.size == 1
+        #       if v[i][j+1] == 0 && v[i][j-WIN_SIZE] == 0
+        #         return i, j-WIN_SIZE, true
+        #       end
+        #     end
+        #   end
+        # end
       end
     end
     return 0, 0, false
