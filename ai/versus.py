@@ -75,9 +75,11 @@ while True:
                 else:
                     wins[1] += 1
                 finish = True
+                break
             elif status == 3:
                 print 'draw'
                 finish = True
+                break
             else:
                 pass
 
