@@ -118,13 +118,20 @@ class Game < ApplicationRecord
             # lv 7  cnn 3-layer
             # lv 8  4-layer nn
             # lv 9  inf 4l nn - from initial
-            # lv 10  inf 1l nn - from initial 
+            # lv 10  inf 1l nn - from initial
+            # lv 11 inf 2l nn from init
             # ----- deprecated -----
-            # lv 11 inf ?
             # lv 12 inf cnn - f edu
             # lv 13 inf 2lnn - f edu
             # lv 14 inf cnn randoms(0-14) f edu
             # lv 15 inf cnn vs random f edu
+
+            # TODO: sophisticate
+            layers = {
+              '9': 4,
+              '10': 1,
+              '11': 2
+            }
 
             result = nil
             puts self_sign
@@ -133,7 +140,9 @@ class Game < ApplicationRecord
             board_bridge = inv.map{|a| (a.to_i==SECONDARY_SIGN) ? 2 : a.to_i}.join(' ')
             cmd = "python #{Rails.root}/ai/lv#{level}/exe.py #{board_bridge}"
 
-            cmd = "python #{Rails.root}/ai/exe.py #{Rails.root}/ai/lv#{level}/model/model.ckpt #{board_bridge}" if level.to_i >= 9
+            layer = layers[level]
+
+            cmd = "python #{Rails.root}/ai/exe.py #{Rails.root}/ai/lv#{level}/model/model.ckpt #{layer} #{board_bridge}" if level.to_i >= 9
 
             p cmd
             result, e, s = Open3.capture3(cmd)
