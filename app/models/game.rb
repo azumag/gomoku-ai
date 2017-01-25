@@ -118,8 +118,8 @@ class Game < ApplicationRecord
             # lv 7  cnn 3-layer
             # lv 8  4-layer nn
             # lv 9  inf 4l nn - from initial
+            # lv 10  inf 1l nn - from initial 
             # ----- deprecated -----
-            # lv 10  inf 4l nn - from educated
             # lv 11 inf ?
             # lv 12 inf cnn - f edu
             # lv 13 inf 2lnn - f edu
