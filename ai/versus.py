@@ -34,8 +34,9 @@ wins = [0, 0]
 while True:
     count += 1
     if count >= n_battle:
-        print ( wins[0] / n_battle )
-        print ( wins[1] / n_battle )
+        print ( float(wins[0] / n_battle) )
+        print ( float(wins[1] / n_battle) )
+        break
 
     turn = 1
     board = np.zeros([b.BOARD_SIZE, b.BOARD_SIZE])
