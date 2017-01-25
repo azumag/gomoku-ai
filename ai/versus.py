@@ -41,7 +41,10 @@ while True:
     board = np.zeros([b.BOARD_SIZE, b.BOARD_SIZE])
     board_histories = [[], []]
     answer_histories = [[],[]]
+    finish = False
     while True:
+        if finish:
+            break
 
         for n in ns:
 
@@ -71,10 +74,10 @@ while True:
                     wins[0] += 1
                 else:
                     wins[1] += 1
-                break
+                finish = True
             elif status == 3:
                 print 'draw'
-                break
+                finish = True
             else:
                 pass
 
