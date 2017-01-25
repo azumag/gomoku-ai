@@ -140,7 +140,7 @@ class Game < ApplicationRecord
             board_bridge = inv.map{|a| (a.to_i==SECONDARY_SIGN) ? 2 : a.to_i}.join(' ')
             cmd = "python #{Rails.root}/ai/lv#{level}/exe.py #{board_bridge}"
 
-            layer = layers[level]
+            layer = layers[level.to_sym]
 
             cmd = "python #{Rails.root}/ai/exe.py #{Rails.root}/ai/lv#{level}/model/model.ckpt #{layer} #{board_bridge}" if level.to_i >= 9
 
