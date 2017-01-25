@@ -45,7 +45,7 @@ while True:
 
         for n in ns:
 
-            board_bridge = np.array(b.transform_bridge(board)[0])
+            board_bridge = np.array(b.transform_bridge(board))
             if turn == 2:
                 board_bridge[history==1] = -1
                 board_bridge[history==2] = -2
