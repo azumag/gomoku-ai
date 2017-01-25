@@ -47,10 +47,10 @@ while True:
 
             board_bridge = np.array(b.transform_bridge(board))
             if turn == 2:
-                board_bridge[history==1] = -1
-                board_bridge[history==2] = -2
-                board_bridge[history==-1] = 2
-                board_bridge[history==-2] = 1
+                board_bridge[board_bridge==1] = -1
+                board_bridge[board_bridge==2] = -2
+                board_bridge[board_bridge==-1] = 2
+                board_bridge[board_bridge==-2] = 1
 
             result = n.execute(board_bridge)[0]
             i = result / b.BOARD_SIZE
