@@ -34,6 +34,7 @@ wins = [0, 0]
 while True:
     count += 1
     if count >= n_battle:
+        print wins
         print ( float(wins[0] / n_battle) )
         print ( float(wins[1] / n_battle) )
         break
