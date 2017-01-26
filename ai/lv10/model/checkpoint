@@ -1,2 +1,2 @@
-model_checkpoint_path: "/home/azumagakito/gomoku-ai/ai/lv10/model/4layer.ckpt"
-all_model_checkpoint_paths: "/home/azumagakito/gomoku-ai/ai/lv10/model/4layer.ckpt"
+model_checkpoint_path: "model.ckpt"
+all_model_checkpoint_paths: "model.ckpt"
