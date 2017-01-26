@@ -1,6 +1,7 @@
 import tensorflow as tf
 import util as u
 import os
+import random
 
 class Perceptron:
     layer = 0
@@ -71,7 +72,7 @@ class Perceptron:
     def layer_set(self):
         if self.layer == 0:
             return
-            
+
         self.x = tf.placeholder(tf.float32, [None, self.n_input])
 
         self.weights = [ tf.Variable(tf.zeros([self.n_input, self.n_input])) for i in range(self.layer)]
