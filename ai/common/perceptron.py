@@ -19,12 +19,16 @@ class Perceptron:
     def __init__(self, layer, n_input, n_output):
         self.util = u.Util()
         self.sess = tf.Session()
-        self.layer = layer
+        self.layer = layer # zero means random!
         self.n_input = n_input
         self.n_output = n_output
         self.train_step = self.layer_set()
 
     def train(self, train_file, label_file, batch):
+        if self.layer == 0:
+            print 'random'
+            return
+
         train_data  = self.util.load_data(train_file)
         train_label = self.util.load_data(label_file)
 
@@ -50,7 +54,10 @@ class Perceptron:
         return (self.sess.run(accuracy, feed_dict={self.x: test_data, self.y_: test_label}))
 
     def execute(self, input_d):
-        return (self.sess.run(tf.argmax(self.neurons[-1], 1), feed_dict={self.x: input_d}))
+        if self.layer == 0:
+            return random.randint(0, self.n_output-1)
+        else:
+            return (self.sess.run(tf.argmax(self.neurons[-1], 1), feed_dict={self.x: input_d}))
 
     def save(self, save_file):
         saver = tf.train.Saver()
@@ -62,6 +69,9 @@ class Perceptron:
             saver.restore(self.sess, save_file)
 
     def layer_set(self):
+        if self.layer == 0:
+            return
+            
         self.x = tf.placeholder(tf.float32, [None, self.n_input])
 
         self.weights = [ tf.Variable(tf.zeros([self.n_input, self.n_input])) for i in range(self.layer)]
