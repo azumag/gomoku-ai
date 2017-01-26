@@ -56,7 +56,7 @@ class Perceptron:
 
     def execute(self, input_d):
         if self.layer == 0:
-            return random.randint(0, self.n_output-1)
+            return [random.randint(0, self.n_output-1)]
         else:
             return (self.sess.run(tf.argmax(self.neurons[-1], 1), feed_dict={self.x: input_d}))
 
