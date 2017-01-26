@@ -66,16 +66,26 @@ class Perceptron:
 
         self.weights = [ tf.Variable(tf.zeros([self.n_input, self.n_input])) for i in range(self.layer)]
         self.biases  = [ tf.Variable(tf.zeros([self.n_input])) for i in range(self.layer)]
-        self.neurons = [ tf.nn.relu(tf.matmul(self.x, self.weights[0])+self.biases[0]) ]
+        if self.layer > 1:
+            self.neurons = [ tf.nn.relu(tf.matmul(self.x, self.weights[0])+self.biases[0]) ]
+        else:
+            self.neurons = []
 
-        for i in range(1, self.layer-1):
+        if self.layer > 2:
+            for i in range(1, self.layer-1):
+                self.neurons.append(
+                    tf.nn.relu(
+                        tf.matmul(
+                            self.neurons[i-1], self.weights[i])+self.biases[i] ) )
+
+        if self.layer > 1:
             self.neurons.append(
-                tf.nn.relu(
-                    tf.matmul(
-                        self.neurons[i-1], self.weights[i])+self.biases[i] ) )
-        self.neurons.append(
-            tf.nn.softmax(
-                tf.matmul(self.neurons[-1], self.weights[-1]) + self.biases[-1]))
+                tf.nn.softmax(
+                    tf.matmul(self.neurons[-1], self.weights[-1]) + self.biases[-1]))
+        else:
+            self.neurons.append(
+                tf.nn.softmax(
+                    tf.matmul(self.x, self.weights[0]) + self.biases[0]))
 
         self.y_ = tf.placeholder(tf.float32, [None, self.n_output])
 
