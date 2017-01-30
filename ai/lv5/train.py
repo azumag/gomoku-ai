@@ -16,8 +16,8 @@ print "開始時刻: " + str(start_time)
 
 # MNISTデータの読み込み
 print "--- データの読み込み開始 ---"
-histories = csv.reader(open('../data/lv5h', 'r'))
-answs = csv.reader(open('../data/lv5a', 'r'))
+histories = csv.reader(open('../tmp/h-4v4', 'r'))
+answs = csv.reader(open('../tmp/a-4v4', 'r'))
 
 hst_data = [ [ int(a) for a in v ] for v in histories]
 ans_data = [ [ int(a) for a in v ] for v in answs]
@@ -99,6 +99,6 @@ print "終了時刻: " + str(end_time)
 print "かかった時間: " + str(end_time - start_time)
 
 saver = tf.train.Saver()
-saver.save(sess, 'model/model.ckpt')
+saver.save(sess, 'model/test.ckpt')
 
 

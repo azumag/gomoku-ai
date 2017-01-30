@@ -12,6 +12,7 @@ class Perceptron:
     n_output = 0
     x  = None
     y_ = None
+    y   = None
     util = None
     sess = None
     train_step = None
@@ -58,7 +59,8 @@ class Perceptron:
         if self.layer == 0:
             return [random.randint(0, self.n_output-1)]
         else:
-            return (self.sess.run(tf.argmax(self.neurons[-1], 1), feed_dict={self.x: input_d}))
+#            return (self.sess.run(tf.argmax(self.neurons[-1], 1), feed_dict={self.x: input_d}))
+            return (self.sess.run(tf.argmax(self.y, 1), feed_dict={self.x: input_d}))
 
     def save(self, save_file):
         saver = tf.train.Saver()
@@ -77,9 +79,9 @@ class Perceptron:
         self.x = tf.placeholder(tf.float32, [None, 81])
         W = tf.Variable(tf.zeros([81, 81]))
         b = tf.Variable(tf.zeros([81]))
-        y = tf.nn.softmax(tf.matmul(self.x, W) + b)
+        self.y = tf.nn.softmax(tf.matmul(self.x, W) + b)
         self.y_ = tf.placeholder(tf.float32, [None, 81])
-        cross_entropy = -tf.reduce_sum(y_*tf.log(y))
+        cross_entropy = -tf.reduce_sum(self.y_*tf.log(self.y))
 
         # self.x = tf.placeholder(tf.float32, [None, self.n_input])
         #

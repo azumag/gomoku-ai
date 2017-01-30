@@ -21,7 +21,7 @@ sess=tf.InteractiveSession()
 sess.run(init)
 
 saver = tf.train.Saver()
-saver.restore(sess, os.path.dirname(__file__) + "/model/model.ckpt")
+saver.restore(sess, os.path.dirname(__file__) + "/model/test.ckpt")
 
 #histories = csv.reader(open('../tmp/histries.dat', 'r'))
 #hst_data = [ [ int(a) for a in v ] for v in histories]
