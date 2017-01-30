@@ -73,34 +73,42 @@ class Perceptron:
         if self.layer == 0:
             return
 
-        self.x = tf.placeholder(tf.float32, [None, self.n_input])
 
-        self.weights = [ tf.Variable(tf.zeros([self.n_input, self.n_input])) for i in range(self.layer)]
-        self.biases  = [ tf.Variable(tf.zeros([self.n_input])) for i in range(self.layer)]
-        if self.layer > 1:
-            self.neurons = [ tf.nn.relu(tf.matmul(self.x, self.weights[0])+self.biases[0]) ]
-        else:
-            self.neurons = []
+        self.x = tf.placeholder(tf.float32, [None, 81])
+        W = tf.Variable(tf.zeros([81, 81]))
+        b = tf.Variable(tf.zeros([81]))
+        y = tf.nn.softmax(tf.matmul(self.x, W) + b)
+        self.y_ = tf.placeholder(tf.float32, [None, 81])
+        cross_entropy = -tf.reduce_sum(y_*tf.log(y))
 
-        if self.layer > 2:
-            for i in range(1, self.layer-1):
-                self.neurons.append(
-                    tf.nn.relu(
-                        tf.matmul(
-                            self.neurons[i-1], self.weights[i])+self.biases[i] ) )
-
-        if self.layer > 1:
-            self.neurons.append(
-                tf.nn.softmax(
-                    tf.matmul(self.neurons[-1], self.weights[-1]) + self.biases[-1]))
-        else:
-            self.neurons.append(
-                tf.nn.softmax(
-                    tf.matmul(self.x, self.weights[0]) + self.biases[0]))
-
-        self.y_ = tf.placeholder(tf.float32, [None, self.n_output])
-
-        cross_entropy = -tf.reduce_sum(self.y_*tf.log(self.neurons[-1]))
+        # self.x = tf.placeholder(tf.float32, [None, self.n_input])
+        #
+        # self.weights = [ tf.Variable(tf.zeros([self.n_input, self.n_input])) for i in range(self.layer)]
+        # self.biases  = [ tf.Variable(tf.zeros([self.n_input])) for i in range(self.layer)]
+        # if self.layer > 1:
+        #     self.neurons = [ tf.nn.relu(tf.matmul(self.x, self.weights[0])+self.biases[0]) ]
+        # else:
+        #     self.neurons = []
+        #
+        # if self.layer > 2:
+        #     for i in range(1, self.layer-1):
+        #         self.neurons.append(
+        #             tf.nn.relu(
+        #                 tf.matmul(
+        #                     self.neurons[i-1], self.weights[i])+self.biases[i] ) )
+        #
+        # if self.layer > 1:
+        #     self.neurons.append(
+        #         tf.nn.softmax(
+        #             tf.matmul(self.neurons[-1], self.weights[-1]) + self.biases[-1]))
+        # else:
+        #     self.neurons.append(
+        #         tf.nn.softmax(
+        #             tf.matmul(self.x, self.weights[0]) + self.biases[0]))
+        #
+        # self.y_ = tf.placeholder(tf.float32, [None, self.n_output])
+        #
+        # cross_entropy = -tf.reduce_sum(self.y_*tf.log(self.neurons[-1]))
         train_step = tf.train.GradientDescentOptimizer(0.01).minimize(cross_entropy)
 
         init = tf.global_variables_initializer()
