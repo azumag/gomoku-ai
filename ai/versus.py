@@ -69,6 +69,9 @@ while True:
 
             board[i][j] = turn
 
+            b.print_board(board)
+
+
             status = b.status(board)
             if status in (1, 2):
                 print 'win: ' + str(turn)

@@ -16,8 +16,8 @@ print "開始時刻: " + str(start_time)
 
 # MNISTデータの読み込み
 print "--- データの読み込み開始 ---"
-histories = csv.reader(open('../tmp/h-4v4', 'r'))
-answs = csv.reader(open('../tmp/a-4v4', 'r'))
+histories = csv.reader(open('../tmp/ch-4v4', 'r'))
+answs = csv.reader(open('../tmp/ca-4v4', 'r'))
 
 hst_data = [ [ int(a) for a in v ] for v in histories]
 ans_data = [ [ int(a) for a in v ] for v in answs]
