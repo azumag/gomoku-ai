@@ -13,9 +13,12 @@ class Perceptron:
     x  = None
     y_ = None
     y   = None
+    W = None
+    b = None
     util = None
     sess = None
     train_step = None
+    cross_entropy = None
 
     # now input = output is required... TODO; FIXME;
     def __init__(self, layer, n_input, n_output):
@@ -77,11 +80,11 @@ class Perceptron:
 
 
         self.x = tf.placeholder(tf.float32, [None, 81])
-        W = tf.Variable(tf.zeros([81, 81]))
-        b = tf.Variable(tf.zeros([81]))
-        self.y = tf.nn.softmax(tf.matmul(self.x, W) + b)
+        self.W = tf.Variable(tf.zeros([81, 81]))
+        self.b = tf.Variable(tf.zeros([81]))
+        self.y = tf.nn.softmax(tf.matmul(self.x, self.W) + self.b)
         self.y_ = tf.placeholder(tf.float32, [None, 81])
-        cross_entropy = -tf.reduce_sum(self.y_*tf.log(self.y))
+        self.cross_entropy = -tf.reduce_sum(self.y_*tf.log(self.y))
 
         # self.x = tf.placeholder(tf.float32, [None, self.n_input])
         #
@@ -111,7 +114,7 @@ class Perceptron:
         # self.y_ = tf.placeholder(tf.float32, [None, self.n_output])
         #
         # cross_entropy = -tf.reduce_sum(self.y_*tf.log(self.neurons[-1]))
-        train_step = tf.train.GradientDescentOptimizer(0.01).minimize(cross_entropy)
+        train_step = tf.train.GradientDescentOptimizer(0.01).minimize(self.cross_entropy)
 
         init = tf.global_variables_initializer()
         self.sess.run(init)
