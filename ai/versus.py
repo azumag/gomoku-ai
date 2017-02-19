@@ -69,7 +69,7 @@ while True:
 
             board[i][j] = turn
 
-            b.print_board(board)
+            #b.print_board(board)
 
 
             status = b.status(board)

@@ -1,6 +1,8 @@
 import common.board_manager as bm
 import common.perceptron as nn
 import sys
+import numpy as np
+import random
 
 
 model_file = sys.argv[2]
@@ -14,12 +16,15 @@ n = nn.Perceptron(layer, 81, 81)
 
 n.train(data_file_d, data_file_l, 1)
 n.save(model_file)
+n.load(model_file)
 
 n2 = nn.Perceptron(0, 81, 81)
 
 ns = [n, n2]
 
 count = 0
+
+n_battle = int(sys.argv[5])
 
 
 wins = [0, 0]
@@ -62,7 +67,7 @@ while True:
 
             board[i][j] = turn
 
-            b.print_board(board)
+            #b.print_board(board)
 
             status = b.status(board)
             if status in (1, 2):
