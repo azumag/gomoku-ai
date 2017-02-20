@@ -1,0 +1,10 @@
+board_img/0.bmp 22
+board_img/1.bmp 14
+board_img/2.bmp 24
+board_img/3.bmp 15
+board_img/4.bmp 16
+board_img/5.bmp 13
+board_img/6.bmp 25
+board_img/7.bmp 48
+board_img/8.bmp 23
+board_img/9.bmp 21
